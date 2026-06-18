@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weels Issue Report — 15–17 June 2026</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0f2f5;
+      --surface: #ffffff;
+      --border: #e2e6eb;
+      --text: #111827;
+      --muted: #6b7280;
+      --accent: #1d4ed8;
+      --accent-soft: #eff6ff;
+      --danger: #dc2626;
+      --danger-soft: #fef2f2;
+      --warn: #d97706;
+      --warn-soft: #fffbeb;
+      --green: #059669;
+      --green-soft: #ecfdf5;
+      --tab-h: 56px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: #0f172a;
+      padding: 28px 40px 24px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 24px;
+    }
+
+    .header-left h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .header-left p {
+      color: #94a3b8;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .header-stats {
+      display: flex;
+      gap: 20px;
+    }
+
+    .hstat {
+      text-align: right;
+    }
+
+    .hstat-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.02em;
+    }
+
+    .hstat-val.red { color: #f87171; }
+
+    .hstat-label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    /* ── TABS ── */
+    .tabs-bar {
+      background: #0f172a;
+      border-top: 1px solid #1e293b;
+      display: flex;
+      padding: 0 40px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      position: relative;
+      height: var(--tab-h);
+      padding: 0 20px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      border-bottom: 3px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover { color: #cbd5e1; }
+
+    .tab-btn.active {
+      color: #fff;
+      border-bottom-color: #3b82f6;
+    }
+
+    .tab-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #1e293b;
+      color: #94a3b8;
+    }
+
+    .tab-btn.active .tab-count {
+      background: #1d4ed8;
+      color: #fff;
+    }
+
+    /* ── SEARCH BAR ── */
+    .search-bar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      max-width: 480px;
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9ca3af;
+      pointer-events: none;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 9px 12px 9px 36px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 13px;
+      color: var(--text);
+      background: #f9fafb;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(29,78,216,0.12);
+      background: #fff;
+    }
+
+    .result-count {
+      font-size: 12px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    /* ── PAGE WRAPPER ── */
+    .page {
+      display: none;
+      padding: 28px 40px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .page.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── DAY SUMMARY STRIP ── */
+    .day-summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .summary-card .sc-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .summary-card .sc-val {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: -0.02em;
+    }
+
+    .summary-card .sc-val.red { color: var(--danger); }
+    .summary-card .sc-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    /* ── CASE CARDS ── */
+    .case-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .case-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.15s;
+    }
+
+    .case-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+
+    .case-card.hidden { display: none !important; }
+
+    .case-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+
+    .ptc-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      background: var(--accent-soft);
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 3px 8px;
+      white-space: nowrap;
+    }
+
+    .issue-pill {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--danger);
+      background: var(--danger-soft);
+      border: 1px solid #fecaca;
+      border-radius: 999px;
+      padding: 3px 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .maid-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      flex: 1;
+    }
+
+    .meta-pills {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .meta-pill {
+      font-size: 12px;
+      color: var(--muted);
+      background: #f1f5f9;
+      border-radius: 6px;
+      padding: 3px 8px;
+    }
+
+    .cost-pill {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--danger);
+      background: var(--danger-soft);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .case-body {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 0;
+    }
+
+    .case-summary {
+      padding: 14px 16px;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: #374151;
+      border-right: 1px solid var(--border);
+    }
+
+    .case-reason {
+      padding: 14px 16px;
+    }
+
+    .box-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .reason-text {
+      font-size: 13px;
+      color: #92400e;
+      line-height: 1.55;
+      background: var(--warn-soft);
+      border: 1px solid #fde68a;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+
+    /* ── EMPTY STATE ── */
+    .empty-state {
+      display: none;
+      text-align: center;
+      padding: 56px 24px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .empty-state svg { margin-bottom: 12px; opacity: 0.35; }
+
+    /* ── ALL PAGE OVERVIEW ── */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .overview-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .ov-day {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .ov-stats {
+      display: flex;
+      gap: 20px;
+    }
+
+    .ov-stat-val {
+      font-size: 28px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text);
+      letter-spacing: -0.02em;
+    }
+
+    .ov-stat-val.red { color: var(--danger); font-size: 20px; margin-top: 4px; }
+    .ov-stat-label { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+    .ov-divider { width: 1px; background: var(--border); }
+
+    .ov-reasons {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .ov-reason-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      gap: 8px;
+    }
+
+    .ov-reason-label {
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .ov-reason-count {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--text);
+      background: var(--bg);
+      border-radius: 4px;
+      padding: 1px 6px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .header { flex-direction: column; align-items: flex-start; padding: 20px 20px 16px; }
+      .tabs-bar { padding: 0 20px; overflow-x: auto; }
+      .search-bar, .page { padding-left: 20px; padding-right: 20px; }
+      .case-body { grid-template-columns: 1fr; }
+      .case-summary { border-right: none; border-bottom: 1px solid var(--border); }
+      .day-summary, .overview-grid { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      .tabs-bar, .search-bar { display: none; }
+      .page { display: block !important; padding: 0; }
+      .case-card { break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <h1>Weels Issue Report</h1>
+    <p>15, 16 &amp; 17 June 2026 · Cases categorised as Weels-fault only</p>
+  </div>
+  <div class="header-stats">
+    <div class="hstat">
+      <div class="hstat-val">13</div>
+      <div class="hstat-label">Total Cases</div>
+    </div>
+    <div class="hstat">
+      <div class="hstat-val red">471.82</div>
+      <div class="hstat-label">Total AED</div>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <button class="tab-btn active" onclick="switchTab('overview', this)">
+    Overview <span class="tab-count">3 days</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('d15', this)">
+    15 June <span class="tab-count">4</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('d16', this)">
+    16 June <span class="tab-count">3</span>
+  </button>
+  <button class="tab-btn" onclick="switchTab('d17', this)">
+    17 June <span class="tab-count">6</span>
+  </button>
+</div>
+
+<!-- SEARCH -->
+<div class="search-bar">
+  <div class="search-wrap">
+    <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+    </svg>
+    <input class="search-input" id="searchInput" placeholder="Search by PTC, maid name, or keyword…" oninput="doSearch()">
+  </div>
+  <span class="result-count" id="resultCount"></span>
+</div>
+
+<!-- ═══════════ OVERVIEW PAGE ═══════════ -->
+<div class="page active" id="page-overview">
+  <div class="overview-grid">
+    <!-- 15 June overview -->
+    <div class="overview-card">
+      <div class="ov-day">15 June 2026</div>
+      <div class="ov-stats">
+        <div>
+          <div class="ov-stat-val">4</div>
+          <div class="ov-stat-label">Cases</div>
+        </div>
+        <div class="ov-divider"></div>
+        <div>
+          <div class="ov-stat-val red">107.31</div>
+          <div class="ov-stat-label">AED lost</div>
+        </div>
+      </div>
+      <div class="ov-reasons">
+        <div class="box-label">Failure reasons</div>
+        <div class="ov-reason-row"><span class="ov-reason-label">Wrong location (driver/system)</span><span class="ov-reason-count">3</span></div>
+        <div class="ov-reason-row"><span class="ov-reason-label">Driver delay / didn't arrive</span><span class="ov-reason-count">1</span></div>
+      </div>
+    </div>
+
+    <!-- 16 June overview -->
+    <div class="overview-card">
+      <div class="ov-day">16 June 2026</div>
+      <div class="ov-stats">
+        <div>
+          <div class="ov-stat-val">3</div>
+          <div class="ov-stat-label">Cases</div>
+        </div>
+        <div class="ov-divider"></div>
+        <div>
+          <div class="ov-stat-val red">199.35</div>
+          <div class="ov-stat-label">AED lost</div>
+        </div>
+      </div>
+      <div class="ov-reasons">
+        <div class="box-label">Failure reasons</div>
+        <div class="ov-reason-row"><span class="ov-reason-label">Wrong location (driver/system)</span><span class="ov-reason-count">1</span></div>
+        <div class="ov-reason-row"><span class="ov-reason-label">Driver arrived late</span><span class="ov-reason-count">1</span></div>
+        <div class="ov-reason-row"><span class="ov-reason-label">Maid not ready (disputed)</span><span class="ov-reason-count">1</span></div>
+      </div>
+    </div>
+
+    <!-- 17 June overview -->
+    <div class="overview-card">
+      <div class="ov-day">17 June 2026</div>
+      <div class="ov-stats">
+        <div>
+          <div class="ov-stat-val">6</div>
+          <div class="ov-stat-label">Cases</div>
+        </div>
+        <div class="ov-divider"></div>
+        <div>
+          <div class="ov-stat-val red">165.16</div>
+          <div class="ov-stat-label">AED lost</div>
+        </div>
+      </div>
+      <div class="ov-reasons">
+        <div class="box-label">Failure reasons</div>
+        <div class="ov-reason-row"><span class="ov-reason-label">Wrong location / drop-off</span><span class="ov-reason-count">3</span></div>
+        <div class="ov-reason-row"><span class="ov-reason-label">Failed pick-up (driver refusal)</span><span class="ov-reason-count">2</span></div>
+        <div class="ov-reason-row"><span class="ov-reason-label">Left with another driver</span><span class="ov-reason-count">1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- All cases compact list for overview -->
+  <div style="margin-bottom:12px;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;">All 13 Cases</div>
+  <div class="case-list" id="all-cases-list"></div>
+</div>
+
+<!-- ═══════════ 15 JUNE PAGE ═══════════ -->
+<div class="page" id="page-d15">
+  <div class="day-summary">
+    <div class="summary-card">
+      <div class="sc-label">Cases</div>
+      <div class="sc-val">4</div>
+      <div class="sc-sub">15 June 2026</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Total Cost</div>
+      <div class="sc-val red">107.31</div>
+      <div class="sc-sub">AED attributable to Weels</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Top Failure Mode</div>
+      <div class="sc-val" style="font-size:18px;font-family:'Inter';font-weight:700;">Wrong location</div>
+      <div class="sc-sub">3 of 4 cases flagged as wrong location</div>
+    </div>
+  </div>
+  <div class="case-list" id="list-d15"></div>
+  <div class="empty-state" id="empty-d15">
+    <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <div>No matching cases</div>
+  </div>
+</div>
+
+<!-- ═══════════ 16 JUNE PAGE ═══════════ -->
+<div class="page" id="page-d16">
+  <div class="day-summary">
+    <div class="summary-card">
+      <div class="sc-label">Cases</div>
+      <div class="sc-val">3</div>
+      <div class="sc-sub">16 June 2026</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Total Cost</div>
+      <div class="sc-val red">199.35</div>
+      <div class="sc-sub">AED attributable to Weels</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Highest Single Cost</div>
+      <div class="sc-val red" style="font-size:22px;">81.64</div>
+      <div class="sc-sub">AED — PTC-7107 (Regine Amaro)</div>
+    </div>
+  </div>
+  <div class="case-list" id="list-d16"></div>
+  <div class="empty-state" id="empty-d16">
+    <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <div>No matching cases</div>
+  </div>
+</div>
+
+<!-- ═══════════ 17 JUNE PAGE ═══════════ -->
+<div class="page" id="page-d17">
+  <div class="day-summary">
+    <div class="summary-card">
+      <div class="sc-label">Cases</div>
+      <div class="sc-val">6</div>
+      <div class="sc-sub">17 June 2026</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Total Cost</div>
+      <div class="sc-val red">165.16</div>
+      <div class="sc-sub">AED attributable to Weels</div>
+    </div>
+    <div class="summary-card">
+      <div class="sc-label">Top Failure Mode</div>
+      <div class="sc-val" style="font-size:18px;font-family:'Inter';font-weight:700;">Wrong location</div>
+      <div class="sc-sub">3 of 6 cases — driver or system error</div>
+    </div>
+  </div>
+  <div class="case-list" id="list-d17"></div>
+  <div class="empty-state" id="empty-d17">
+    <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    <div>No matching cases</div>
+  </div>
+</div>
+
+<script>
+  const DATA = [
+    {"date":"15 June 2026","day":"d15","ptc":"PTC-6881","maid":"DIVINA GAMIZ DOMINGO","pickup":"2026-06-15, 07:45","cost":38.38,"summary":"The Weels order failed because the driver did not pick up the maid at the correct meeting point near Max Metro Station. Chat evidence shows she followed instructions and reached the meeting point; the driver initially confirmed but then cancelled pickup, forcing operations to book a Careem at 07:43. The requested pickup time of 07:45 was valid (45 minutes before booking start), and the failure occurred despite correct setup and maid readiness.","reason":"wrong location ,"},
+    {"date":"15 June 2026","day":"d15","ptc":"PTC-6889","maid":"EUSILYN JADMAN ACOJEDO","pickup":"2026-06-15, 08:35","cost":10.00,"summary":"The Weels failed because the maid was on her way to the DMCC pickup point when the order was marked failed (as per Anthony). The Weels order's pickup segment did not match the planned partial Weels route, causing confusion and a missed connection. The failure occurred about 25 minutes before the 09:00 duty start — within the valid operational window — but the Weels setup error directly caused the failed pickup.","reason":"wrong location ,"},
+    {"date":"15 June 2026","day":"d15","ptc":"PTC-6947","maid":"MARITES GARCIA NERONA","pickup":"2026-06-15, 11:45","cost":29.61,"summary":"The Weels failed because the maid was already at the location 10 minutes before her pickup time, yet the order was failed and a duplicate was added. Cleaner chat confirms she was initially confused about the meeting point due to a briefing mismatch (told to expect a car lift, then redirected to Aden Street). She eventually reached the meeting point and was picked up late.","reason":"wrong location ,"},
+    {"date":"15 June 2026","day":"d15","ptc":"PTC-6964","maid":"PERDELISA PUNO MARAYAN","pickup":"2026-06-15, 21:20","cost":29.32,"summary":"The Weels order was valid and correctly timed for a leaving-client trip at 21:20, ~20 minutes after the 21:00 duty end. Cleaner chat shows she finished work on time and reported no driver contact. Weels company chat at 22:13 confirmed the assigned driver needed 41 minutes to reach her — indicating driver unavailability, not a maid or setup issue. She was rebooked and picked up around 23:00.","reason":"failed pick up 30 mins passed\nnoor"},
+    {"date":"16 June 2026","day":"d16","ptc":"PTC-7128","maid":"ZULEIHA HADIJA WANGATIA","pickup":"2026-06-16, 07:10","cost":41.18,"summary":"Pickup and drop-off were correct (full taxi route) but Weels assumed the maid was in the wrong location and failed the order on that basis.","reason":"wrong location ,"},
+    {"date":"16 June 2026","day":"d16","ptc":"PTC-7090","maid":"MENCHIE AKMAD MANUEL","pickup":"2026-06-16, 07:32","cost":76.53,"summary":"The driver arrived late at 08:11 for a 07:32 scheduled pickup. Because of the 39-minute delay the Weels trip was failed and the maid was booked a Careem instead.","reason":"left with another driver ,"},
+    {"date":"16 June 2026","day":"d16","ptc":"PTC-7107","maid":"REGINE AMARO","pickup":"2026-06-16, 12:30","cost":81.64,"summary":"Weel cancelled the order even though the maid finished at 12:42 PM — only 12 minutes after her drop-off — which falls within the 15-minute waiting window. The cancellation was premature and unjustified.","reason":"maid is not ready ,"},
+    {"date":"17 June 2026","day":"d17","ptc":"PTC-7323","maid":"JENEFER CLARITO DE QUIROZ","pickup":"2026-06-17, 08:00","cost":59.52,"summary":"The driver dropped the maid at the wrong location ('rehabilitation center') instead of the correct client address in Al Quoz. Chat evidence shows she was picked up around 07:56 and reported the wrong drop-off at 08:06. The order coordinates were correct; the failure was a driver execution error.","reason":"wrong pick up location"},
+    {"date":"17 June 2026","day":"d17","ptc":"PTC-7262","maid":"MARICHO GERONIMO EVAROLA","pickup":"2026-06-17, 08:20","cost":18.15,"summary":"Weel chats confirmed they assumed the maid was at the wrong location, even though she was at the correct location at the correct time.","reason":"wrong location , ptc asked to cancel ,"},
+    {"date":"17 June 2026","day":"d17","ptc":"PTC-7230","maid":"JANE WANJIKU MUNGAI","pickup":"2026-06-17, 13:15","cost":39.45,"summary":"The driver used the wrong drop-off address despite it being correct in the order. The maid was at the pickup location at the right time.","reason":"left with another driver ,"},
+    {"date":"17 June 2026","day":"d17","ptc":"PTC-7294","maid":"REGINE AMARO","pickup":"2026-06-17, 15:15","cost":5.93,"summary":"Weel requested another order even though the maid was already with the driver. They claimed the driver had waited too long, despite the maid being present.","reason":"failed pick up she still didnt arive 15 qmins passed\nmamoon"},
+    {"date":"17 June 2026","day":"d17","ptc":"PTC-7291","maid":"PERDELISA PUNO MARAYAN","pickup":"2026-06-17, 16:30","cost":21.55,"summary":"The leaving-client pickup at 16:30 (30 min after the 16:00 booking end) failed because the driver refused to pick up the maid at the correct time and location. Cleaner chat between 16:23–16:40 shows the coordinator confirming the driver was calling her; at 16:39 the maid reported 'the driver did not want to pick her up.' The coordinator immediately rebooked another taxi. No maid refusal or unavailability was found.","reason":"failed pick up 15 mins passed\nzafran"},
+    {"date":"17 June 2026","day":"d17","ptc":"PTC-7257","maid":"LUZ MORALES FEROLINO","pickup":"2026-06-17, 17:50","cost":20.56,"summary":"The driver told the maid her Weel was cancelled at the 17:50 pickup time, even though she was ready and present. Weel chat shows they cancelled the order because she allegedly said she wouldn't be done, without PTC confirmation. They marked it closed at 5:50 PM — inside the 15-minute waiting window.","reason":"failed pick up 15 mins passed\nanwar hossain"}
+  ];
+
+  function makeCard(item) {
+    const reasonHtml = item.reason.replace(/\n/g, '<br>');
+    return `
+      <div class="case-card" data-day="${item.day}" data-search="${(item.ptc + ' ' + item.maid + ' ' + item.summary + ' ' + item.reason).toLowerCase()}">
+        <div class="case-head">
+          <span class="ptc-badge">${item.ptc}</span>
+          <span class="issue-pill">Weels Issue</span>
+          <span class="maid-name">${item.maid}</span>
+          <div class="meta-pills">
+            <span class="meta-pill">⏱ ${item.pickup}</span>
+            <span class="cost-pill">${item.cost.toFixed(2)} AED</span>
+          </div>
+        </div>
+        <div class="case-body">
+          <div class="case-summary">${item.summary}</div>
+          <div class="case-reason">
+            <div class="box-label">Weels reason given</div>
+            <div class="reason-text">${reasonHtml}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Populate lists
+  ['d15','d16','d17'].forEach(day => {
+    const list = document.getElementById('list-' + day);
+    DATA.filter(d => d.day === day).forEach(item => {
+      list.insertAdjacentHTML('beforeend', makeCard(item));
+    });
+  });
+
+  // Populate overview all-cases list
+  const allList = document.getElementById('all-cases-list');
+  DATA.forEach(item => { allList.insertAdjacentHTML('beforeend', makeCard(item)); });
+
+  // Tab switching
+  let currentTab = 'overview';
+
+  function switchTab(tab, btn) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + tab).classList.add('active');
+    btn.classList.add('active');
+    currentTab = tab;
+    document.getElementById('searchInput').value = '';
+    updateResultCount();
+  }
+
+  // Search
+  function doSearch() {
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
+    const activePage = document.querySelector('.page.active');
+    const cards = activePage.querySelectorAll('.case-card');
+    let visible = 0;
+    cards.forEach(card => {
+      const match = !q || card.dataset.search.includes(q);
+      card.classList.toggle('hidden', !match);
+      if (match) visible++;
+    });
+    // empty states
+    ['d15','d16','d17'].forEach(d => {
+      const el = document.getElementById('empty-' + d);
+      if (el) el.style.display = 'none';
+    });
+    if (currentTab !== 'overview') {
+      const emptyEl = document.getElementById('empty-' + currentTab);
+      if (emptyEl) emptyEl.style.display = visible === 0 ? 'flex' : 'none';
+    }
+    updateResultCount(visible, cards.length, !!q);
+  }
+
+  function updateResultCount(visible, total, hasQuery) {
+    const el = document.getElementById('resultCount');
+    if (!hasQuery || visible === undefined) { el.textContent = ''; return; }
+    el.textContent = `${visible} of ${total} shown`;
+  }
+</script>
+</body>
+</html>
