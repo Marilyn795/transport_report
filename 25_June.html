@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Transportation Ops Report - June 25 2026</title>
+
+  <style>
+    :root {
+      --bg: #eef0f3;
+      --surface: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --border-strong: #d1d5db;
+      --accent: #1d4ed8;
+      --navy: #0f172a;
+      --danger: #b91c1c;
+      --success: #15803d;
+      --warning: #b45309;
+      --radius: 8px;
+      --layout-max-width: 1408px;
+      --header-max-width: calc(var(--layout-max-width) * 1.15);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 13.5px;
+      zoom: 0.9;
+    }
+
+    header {
+      background: #191d24;
+      color: #ffffff;
+      padding: 22px 32px 18px;
+      border-bottom: 1px solid #1f2937;
+    }
+
+    header .header-inner {
+      max-width: var(--header-max-width);
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 23px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+    }
+
+    header .sub {
+      margin-top: 3px;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex-shrink: 0;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 12px;
+    }
+
+    button:hover {
+      background: #f3f4f6;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    button.danger {
+      color: var(--danger);
+      border-color: #fecaca;
+    }
+
+    .container {
+      padding: 20px 32px 40px;
+      max-width: var(--layout-max-width);
+      margin: 0 auto;
+    }
+
+    .content-layout {
+      display: grid;
+      grid-template-columns: 3fr 7fr;
+      gap: 24px;
+      margin-top: 22px;
+    }
+
+    .filter-nav {
+      width: auto;
+      position: sticky;
+      top: 20px;
+      align-self: flex-start;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 14px;
+      box-shadow: 0 1px 2px rgba(47, 54, 64, 0.04);
+    }
+
+    .filter-nav-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .filter-field {
+      margin-bottom: 12px;
+    }
+
+    .filter-field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .filter-field input,
+    .filter-field select {
+      width: 100%;
+    }
+
+    .filter-nav-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 14px 0;
+    }
+
+    .filter-nav-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .cases-section {
+      width: auto;
+      min-width: 0;
+    }
+
+    .cases-section .card {
+      width: 100%;
+    }
+
+    .kpi-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .kpi {
+      background: var(--surface);
+      padding: 16px 18px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(47, 54, 64, 0.04);
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.1;
+    }
+
+    .kpi-value.danger {
+      color: var(--danger);
+    }
+
+    .kpi-note {
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .kpi .transport {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .kpi .transport span {
+      white-space: nowrap;
+    }
+
+    .kpi .transport strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .careem-input {
+      width: 58px;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 1px 0;
+      margin-left: 4px;
+    }
+
+    .careem-input:focus {
+      outline: none;
+      border-bottom-color: var(--accent);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-family: inherit;
+      font-size: 13px;
+      background: white;
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+    }
+
+    textarea {
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    /* Toolbar row: pills + controls */
+    .filter-nav .pill-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .filter-nav .pill {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 12.5px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      transition: background 0.12s;
+    }
+
+    .filter-nav .pill:hover {
+      background: #f3f4f6;
+    }
+
+    .filter-nav .pill.active {
+      background: #eff6ff;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .filter-nav .pill .nav-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .filter-nav .pill .pill-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .filter-nav .pill .case-count {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 0 7px;
+      line-height: 18px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.07);
+      color: inherit;
+      flex-shrink: 0;
+    }
+
+    .filter-nav .pill.active .case-count {
+      background: rgba(29, 78, 216, 0.12);
+    }
+
+    .filter-nav .pill .loss-amt {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 0 7px;
+      line-height: 18px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.07);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .filter-nav .pill .loss-amt.loss-red {
+      color: var(--danger);
+    }
+
+    .filter-nav .pill .loss-amt.loss-grey {
+      color: var(--muted);
+    }
+
+    .filter-nav .pill.active .loss-amt {
+      background: rgba(29, 78, 216, 0.12);
+    }
+
+    .filter-nav .visible-count {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .filter-nav .visible-count strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Card shell */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 1px 2px rgba(47, 54, 64, 0.04);
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+    }
+
+    .card-head .muted {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    /* Losses-by-category bar */
+    .lossbar-wrap {
+      padding: 18px;
+    }
+
+    .lossbar {
+      display: flex;
+      height: 16px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e5e7eb;
+    }
+
+    .lossbar-seg {
+      height: 100%;
+      min-width: 2px;
+    }
+
+    .lossbar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 20px;
+      margin-top: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      color: var(--text);
+    }
+
+    .legend-val {
+      color: var(--muted);
+    }
+
+    /* Data table */
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    table.cases {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    table.cases th {
+      text-align: left;
+      font-size: 10.5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: #fafbfc;
+      white-space: nowrap;
+    }
+
+    table.cases th.num,
+    table.cases td.num {
+      text-align: right;
+    }
+
+    table.cases th.center,
+    table.cases td.center {
+      text-align: center;
+    }
+
+    table.cases td {
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    table.cases tbody tr.case-tr:hover {
+      background: #fafbfc;
+    }
+
+    table.cases tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .ptc {
+      font-weight: 600;
+      color: var(--navy);
+      white-space: nowrap;
+    }
+
+    .maid {
+      max-width: 209px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .nowrap {
+      white-space: nowrap;
+      color: var(--muted);
+    }
+
+    .cost {
+      font-weight: 600;
+      color: var(--success);
+      white-space: nowrap;
+    }
+
+    .cost.zero {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .cell-select select {
+      border: 1px solid transparent;
+      background: transparent;
+      padding: 4px 24px 4px 8px;
+      font-size: 12.5px;
+      border-radius: 6px;
+      width: auto;
+      cursor: pointer;
+    }
+
+    .cell-select select:hover {
+      border-color: var(--border);
+      background: white;
+    }
+
+    .icon-btn {
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 6px;
+      width: 30px;
+      height: 30px;
+      padding: 0;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .icon-btn:hover {
+      background: #f3f4f6;
+      color: var(--navy);
+    }
+
+    .icon-btn.open {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: white;
+    }
+
+    .expand-row td {
+      background: #fafbfc;
+      padding: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .expand-inner {
+      padding: 16px 18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px 24px;
+    }
+
+    .expand-inner label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .expand-inner textarea {
+      min-height: 74px;
+      font-size: 12.5px;
+    }
+
+    .expand-actions {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .badge.loss {
+      color: var(--danger);
+      background: #fef2f2;
+    }
+
+    .badge.no-loss {
+      color: var(--success);
+      background: #f0fdf4;
+    }
+
+    .badge.review {
+      color: var(--warning);
+      background: #fffbeb;
+      margin-left: 6px;
+    }
+
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      grid-column: 1 / -1;
+    }
+
+    /* Case cards */
+    .case-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .case-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cc-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .cc-id {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .cc-id strong {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .cc-cost {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--danger);
+    }
+
+    .cc-cost.zero {
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .cc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .cc-meta b {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .cc-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .cc-field textarea {
+      width: 100%;
+      min-height: 0;
+      height: auto;
+      overflow: hidden;
+      resize: none;
+      field-sizing: content;
+      font-size: 12.5px;
+      line-height: 1.5;
+      background: #f3f4f6;
+      border-color: var(--border);
+    }
+
+    .cc-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 4px;
+      border-top: 1px solid var(--border);
+      margin-top: 2px;
+    }
+
+    .cc-cat {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .cc-cat select {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 12px;
+      width: auto;
+      cursor: pointer;
+    }
+
+    .btn-link {
+      border: none;
+      background: none;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 0;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-link:hover {
+      text-decoration: underline;
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(16, 24, 40, 0.68);
+      z-index: 100;
+      padding: 28px;
+      overflow: auto;
+    }
+
+    .modal {
+      background: white;
+      max-width: 1078px;
+      margin: 0 auto;
+      border-radius: 18px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 18px 21px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      background: #fbfdff;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .modal-body {
+      padding: 18px;
+      max-height: 76vh;
+      overflow: auto;
+    }
+
+    .details-conversations {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #ffffff;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+
+    .details-section-title {
+      padding: 13px 15px;
+      background: #f8fafc;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 900;
+      color: #101828;
+    }
+
+    .conversation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding: 14px;
+    }
+
+    .conversation-day-box {
+      border: 1px solid #e4e7ec;
+      border-radius: 12px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+
+    .conversation-day-title {
+      padding: 11px 13px;
+      background: #f8fafc;
+      color: #344054;
+      font-size: 13px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid #e4e7ec;
+    }
+
+    .conversation-id-list {
+      padding: 10px;
+      max-height: 160px;
+      overflow: auto;
+    }
+
+    .conversation-id-pill {
+      display: inline-flex;
+      align-items: center;
+      background: #f9fafb;
+      border: 1px solid #d0d5dd;
+      color: #344054;
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      margin: 4px 5px 4px 0;
+      word-break: break-all;
+    }
+
+    .no-conversations {
+      color: #667085;
+      font-size: 13px;
+      padding: 12px;
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .analysis-box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: #ffffff;
+    }
+
+    .analysis-box h4 {
+      margin: 0 0 9px;
+      font-size: 15px;
+      font-weight: 900;
+      color: #101828;
+      border-bottom: 1px solid #eef2f7;
+      padding-bottom: 7px;
+    }
+
+    .analysis-box p,
+    .analysis-box li {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .wide-box {
+      grid-column: 1 / -1;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-top: 6px;
+    }
+
+
+
+    .header-actions {
+      margin-top: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .save-status {
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 12px;
+      margin-left: 4px;
+    }
+
+    header button {
+      border-color: rgba(255, 255, 255, 0.22);
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
+
+    header button:hover {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    header button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    @media (max-width: 960px) {
+      .content-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-nav,
+      .cases-section {
+        width: 100%;
+      }
+
+      .filter-nav {
+        position: static;
+      }
+
+      .filter-nav .pill-group {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .filter-nav .pill {
+        width: auto;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: white;
+      }
+
+      .expand-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .kpi-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      header {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>Daily Transportation Ops Report - June 25 2026</h1>
+      <div class="header-actions">
+        <button class="primary" onclick="manualSaveState()">Save Changes</button>
+        <button onclick="downloadEditedHtml()">Download Edited HTML</button>
+        <button onclick="downloadJson()">Download Data JSON</button>
+        <button class="danger" onclick="resetChanges()">Reset</button>
+        <span class="save-status" id="saveStatus">Unsaved edits are saved when you click Save or Download.</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <div class="kpi-bar">
+      <div class="kpi">
+        <div class="kpi-label">Transport Cost / Hour</div>
+        <div class="kpi-value" id="costPerHour">14.46 AED/hr</div>
+        <div class="kpi-note" id="costPerHourFormula">8,321.63 ÷ 575.50 booking hrs</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Total Cases</div>
+        <div class="kpi-value" id="totalCases">37</div>
+        <div class="kpi-note" id="totalCasesNote">Unplanned Weels cases</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Total Loss</div>
+        <div class="kpi-value danger" id="failedWeelCost">851.51 AED</div>
+        <div class="kpi-note" id="lossesNote">37 cases counted</div>
+      </div>
+      <div class="kpi">
+        <div class="kpi-label">Total Transportation</div>
+        <div class="kpi-value" id="totalTranspoCost">8,321.63 AED</div>
+        <div class="transport">
+          <span>Careem <input id="careemCostInput" class="careem-input" type="number" step="0.01" value="42" oninput="updateCareemCost()"> AED</span>
+          <span>Weels <strong id="weelCost">6,401.28</strong></span>
+          <span>PT <strong id="ptCost">942.85</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Losses by Category</h2>
+        <span class="muted" id="lossBarTotal"></span>
+      </div>
+      <div class="lossbar-wrap">
+        <div class="lossbar" id="lossBar"></div>
+        <div class="lossbar-legend" id="lossLegend"></div>
+      </div>
+    </div>
+
+    <div class="content-layout">
+      <aside class="filter-nav">
+        <div class="filter-nav-title">Filters</div>
+        <div class="filter-field">
+          <label for="searchInput">Search</label>
+          <input id="searchInput" placeholder="Cases, maids, reasons..." oninput="renderReport()">
+        </div>
+        <nav class="pill-group" id="categoryList"></nav>
+      </aside>
+
+      <div class="cases-section">
+    <div class="card">
+      <div class="card-head">
+        <h2>Cases</h2>
+        <span class="muted" id="tableCount"></span>
+      </div>
+      <div id="reportContent" class="case-grid"></div>
+      </div>
+    </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="detailsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">More Details</h2>
+        <button onclick="closeMoreDetails()">Close</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script id="initial-cases-json" type="application/json">[{"type": "case", "case_id": "PTC-8437", "ptc_order_id": "PTC-8437", "shipday_order_id": "", "maid_name": "JANE WANJIKU MUNGAI", "requested_pickup_time": "2026-06-25, 07:15:00", "requested_delivery_time": "2026-06-25, 08:03:00", "weels_reason": "", "trip_cost": 76.08, "weels_trip_cost": 76.08, "final_category": "Operation mistake", "main_root_cause_summary": "Planned route was PT. A day before, they told her she had a duty at 8 AM and that they will get back to her about the transportation method, but they didn't. The next day they sent her Weel which was unplanned.", "final_reason": "Planned route was PT. A day before, they told her she had a duty at 8 AM and that they will get back to her about the transportation method, but they didn't. The next day they sent her Weel which was unplanned.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["Planned route was PT. A day before, they told her she had a duty at 8 AM and that they will get back to her about the transportation method, but they didn't. The next day they sent her Weel which was unplanned."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 2, "original_reason": "Ops Mistake", "notes": "Planned route was PT. A day before, they told her she had a duty at 8 AM and that they will get back to her about the transportation method, but they didn't. The next day they sent her Weel which was unplanned.", "matched_weel_order": {"orderId": "PTC-8437", "status": "ALREADY_DELIVERED", "passengerName": "JANE WANJIKU MUNGAI", "requestedPickupTimeDubai": "2026-06-25, 07:15:00", "requestedDeliveryTimeDubai": "2026-06-25, 08:03:00", "tripCost": 76.08, "tripShareCost": 76.08, "distanceKm": 33.45, "pickupAddress": "25.23380, 55.27431", "deliveryAddress": "25.02925, 55.17936"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "JANE WANJIKU MUNGAI", "pickup_address": "25.23380, 55.27431", "delivery_address": "25.02925, 55.17936", "distance_km": 33.45}, {"type": "case", "case_id": "PTC-8439", "ptc_order_id": "PTC-8439", "shipday_order_id": "", "maid_name": "DESA CAMROT SALAZAR", "requested_pickup_time": "2026-06-25, 07:31:00", "requested_delivery_time": "2026-06-25, 08:25:00", "weels_reason": "", "trip_cost": 70.63, "weels_trip_cost": 70.63, "final_category": "Operation mistake", "main_root_cause_summary": "Planned route was Partial Weels. They didn;t tell her about the midpoint she needed to reach , so the next day she was booked full Weel.", "final_reason": "Planned route was Partial Weels. They didn;t tell her about the midpoint she needed to reach , so the next day she was booked full Weel.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["Planned route was Partial Weels. They didn;t tell her about the midpoint she needed to reach , so the next day she was booked full Weel."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 3, "original_reason": "Ops Mistake", "notes": "Planned route was Partial Weels. They didn;t tell her about the midpoint she needed to reach , so the next day she was booked full Weel.", "matched_weel_order": {"orderId": "PTC-8439", "status": "ALREADY_DELIVERED", "passengerName": "DESA CAMROT SALAZAR", "requestedPickupTimeDubai": "2026-06-25, 07:31:00", "requestedDeliveryTimeDubai": "2026-06-25, 08:25:00", "tripCost": 70.63, "tripShareCost": 59.79, "distanceKm": 33.52, "pickupAddress": "25.23247, 55.27619", "deliveryAddress": "25.06559, 55.32217"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "DESA CAMROT SALAZAR", "pickup_address": "25.23247, 55.27619", "delivery_address": "25.06559, 55.32217", "distance_km": 33.52}, {"type": "case", "case_id": "PTC-8440", "ptc_order_id": "PTC-8440", "shipday_order_id": "", "maid_name": "MARY ANN ESON AQUILESCA", "requested_pickup_time": "2026-06-25, 07:32:00", "requested_delivery_time": "2026-06-25, 07:40:00", "weels_reason": "", "trip_cost": 12.89, "weels_trip_cost": 12.89, "final_category": "Operation mistake", "main_root_cause_summary": "Planned route was PT and she was briefed based on that. The next day an agent contacts her and tells her taxi is on the way.", "final_reason": "Planned route was PT and she was briefed based on that. The next day an agent contacts her and tells her taxi is on the way.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["Planned route was PT and she was briefed based on that. The next day an agent contacts her and tells her taxi is on the way."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 4, "original_reason": "Ops Mistake", "notes": "Planned route was PT and she was briefed based on that. The next day an agent contacts her and tells her taxi is on the way.", "matched_weel_order": {"orderId": "PTC-8440", "status": "ALREADY_DELIVERED", "passengerName": "MARY ANN ESON AQUILESCA", "requestedPickupTimeDubai": "2026-06-25, 07:32:00", "requestedDeliveryTimeDubai": "2026-06-25, 07:40:00", "tripCost": 12.89, "tripShareCost": 11.45, "distanceKm": 2.35, "pickupAddress": "25.22890, 55.27393", "deliveryAddress": "25.22471, 55.28312"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "MARY ANN ESON AQUILESCA", "pickup_address": "25.22890, 55.27393", "delivery_address": "25.22471, 55.28312", "distance_km": 2.35}, {"type": "case", "case_id": "PTC-8441", "ptc_order_id": "PTC-8441", "shipday_order_id": "", "maid_name": "Daina Askalon Escartin", "requested_pickup_time": "2026-06-25, 07:51:00", "requested_delivery_time": "2026-06-25, 08:30:00", "weels_reason": "", "trip_cost": 60.01, "weels_trip_cost": 60.01, "final_category": "Maid faults", "main_root_cause_summary": "The maid was properly briefed about the planned transportation method, which was a partial Weel route. However, when the team contacted her to check on her, she said she was eating and therefore missed the actual departure time. As a result, a full Weel had to be booked.", "final_reason": "The maid was properly briefed about the planned transportation method, which was a partial Weel route. However, when the team contacted her to check on her, she said she was eating and therefore missed the actual departure time. As a result, a full Weel had to be booked.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The maid was properly briefed about the planned transportation method, which was a partial Weel route. However, when the team contacted her to check on her, she said she was eating and therefore missed the actual departure time. As a result, a full Weel had to be booked."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 5, "original_reason": "Maid Faults", "notes": "The maid was properly briefed about the planned transportation method, which was a partial Weel route. However, when the team contacted her to check on her, she said she was eating and therefore missed the actual departure time. As a result, a full Weel had to be booked.", "matched_weel_order": {"orderId": "PTC-8441", "status": "ALREADY_DELIVERED", "passengerName": "Daina Askalon Escartin", "requestedPickupTimeDubai": "2026-06-25, 07:51:00", "requestedDeliveryTimeDubai": "2026-06-25, 08:30:00", "tripCost": 60.01, "tripShareCost": 60.01, "distanceKm": 27.09, "pickupAddress": "25.23144, 55.27137", "deliveryAddress": "25.07715, 55.16883"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "Daina Askalon Escartin", "pickup_address": "25.23144, 55.27137", "delivery_address": "25.07715, 55.16883", "distance_km": 27.09}, {"type": "case", "case_id": "PTC-8445", "ptc_order_id": "PTC-8445", "shipday_order_id": "", "maid_name": "JAWUHARAH NAMUGENYI", "requested_pickup_time": "2026-06-25, 08:11:00", "requested_delivery_time": "2026-06-25, 08:53:00", "weels_reason": "", "trip_cost": 72.28, "weels_trip_cost": 72.28, "final_category": "Operation mistake", "main_root_cause_summary": "The team told the cleaner that the management will shortly inform her about the transportation method, but they didn't. The next day she was booked Weel.", "final_reason": "The team told the cleaner that the management will shortly inform her about the transportation method, but they didn't. The next day she was booked Weel.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The team told the cleaner that the management will shortly inform her about the transportation method, but they didn't. The next day she was booked Weel."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 6, "original_reason": "Ops Mistake", "notes": "The team told the cleaner that the management will shortly inform her about the transportation method, but they didn't. The next day she was booked Weel.", "matched_weel_order": {"orderId": "PTC-8445", "status": "ALREADY_DELIVERED", "passengerName": "JAWUHARAH NAMUGENYI", "requestedPickupTimeDubai": "2026-06-25, 08:11:00", "requestedDeliveryTimeDubai": "2026-06-25, 08:53:00", "tripCost": 72.28, "tripShareCost": null, "distanceKm": 29.92, "pickupAddress": "25.27248, 55.32389", "deliveryAddress": "25.08314, 55.14757"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "JAWUHARAH NAMUGENYI", "pickup_address": "25.27248, 55.32389", "delivery_address": "25.08314, 55.14757", "distance_km": 29.92}, {"type": "case", "case_id": "PTC-8448", "ptc_order_id": "PTC-8448", "shipday_order_id": "", "maid_name": "JONA PURACAN JABAGAT", "requested_pickup_time": "2026-06-25, 08:25:00", "requested_delivery_time": "2026-06-25, 08:47:00", "weels_reason": "", "trip_cost": 30.34, "weels_trip_cost": 30.34, "final_category": "Needs review", "main_root_cause_summary": "The maid's name does not show in the cleaner management module neither in the PTC planned routes. Based on Janine's sheet, planned route was PT.", "final_reason": "The maid's name does not show in the cleaner management module neither in the PTC planned routes. Based on Janine's sheet, planned route was PT.", "confidence": "needs review", "needs_manual_review": true, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The maid's name does not show in the cleaner management module neither in the PTC planned routes. Based on Janine's sheet, planned route was PT."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 7, "original_reason": "NEEDS REVIEW", "notes": "The maid's name does not show in the cleaner management module neither in the PTC planned routes. Based on Janine's sheet, planned route was PT.", "matched_weel_order": {"orderId": "PTC-8448", "status": "ALREADY_DELIVERED", "passengerName": "JONA PURACAN JABAGAT", "requestedPickupTimeDubai": "2026-06-25, 08:25:00", "requestedDeliveryTimeDubai": "2026-06-25, 08:47:00", "tripCost": 30.34, "tripShareCost": null, "distanceKm": 11.73, "pickupAddress": "25.14920, 55.24652", "deliveryAddress": "25.21694, 55.26003"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "JONA PURACAN JABAGAT", "pickup_address": "25.14920, 55.24652", "delivery_address": "25.21694, 55.26003", "distance_km": 11.73}, {"type": "case", "case_id": "PTC-8455", "ptc_order_id": "PTC-8455", "shipday_order_id": "", "maid_name": "MARITA KAHENZANI MARIGI", "requested_pickup_time": "2026-06-25, 08:50:00", "requested_delivery_time": "2026-06-25, 09:41:00", "weels_reason": "", "trip_cost": 80.3, "weels_trip_cost": 80.3, "final_category": "Maid faults", "main_root_cause_summary": "The maid was briefed the night before that a taxi will pick her up from her room to a midpoint where she will continue by PT. The next day morning the team contacted her about the new transportation method but she was unresponsive.", "final_reason": "The maid was briefed the night before that a taxi will pick her up from her room to a midpoint where she will continue by PT. The next day morning the team contacted her about the new transportation method but she was unresponsive.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The maid was briefed the night before that a taxi will pick her up from her room to a midpoint where she will continue by PT. The next day morning the team contacted her about the new transportation method but she was unresponsive."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 8, "original_reason": "Maid Faults", "notes": "The maid was briefed the night before that a taxi will pick her up from her room to a midpoint where she will continue by PT. The next day morning the team contacted her about the new transportation method but she was unresponsive.", "matched_weel_order": {"orderId": "PTC-8455", "status": "ALREADY_DELIVERED", "passengerName": "MARITA KAHENZANI MARIGI", "requestedPickupTimeDubai": "2026-06-25, 08:50:00", "requestedDeliveryTimeDubai": "2026-06-25, 09:41:00", "tripCost": 80.3, "tripShareCost": null, "distanceKm": 39.15, "pickupAddress": "25.23131, 55.28039", "deliveryAddress": "25.03702, 55.27262"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "MARITA KAHENZANI MARIGI", "pickup_address": "25.23131, 55.28039", "delivery_address": "25.03702, 55.27262", "distance_km": 39.15}, {"type": "case", "case_id": "PTC-8458", "ptc_order_id": "PTC-8458", "shipday_order_id": "", "maid_name": "Regine Amaro", "requested_pickup_time": "2026-06-25, 09:42:00", "requested_delivery_time": "2026-06-25, 10:35:00", "weels_reason": "", "trip_cost": 122.48, "weels_trip_cost": 122.48, "final_category": "Operation mistake", "main_root_cause_summary": "The maid was not told about the booking. She was told the same day at 9 AM so she was booked full Weel instead of the planned partial weel.", "final_reason": "The maid was not told about the booking. She was told the same day at 9 AM so she was booked full Weel instead of the planned partial weel.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The maid was not told about the booking. She was told the same day at 9 AM so she was booked full Weel instead of the planned partial weel."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 9, "original_reason": "Ops Mistake", "notes": "The maid was not told about the booking. She was told the same day at 9 AM so she was booked full Weel instead of the planned partial weel.", "matched_weel_order": {"orderId": "PTC-8458", "status": "ALREADY_DELIVERED", "passengerName": "Regine Amaro", "requestedPickupTimeDubai": "2026-06-25, 09:42:00", "requestedDeliveryTimeDubai": "2026-06-25, 10:35:00", "tripCost": 122.48, "tripShareCost": null, "distanceKm": 65.79, "pickupAddress": "25.23760, 55.27636", "deliveryAddress": "24.85200, 55.16230"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "Regine Amaro", "pickup_address": "25.23760, 55.27636", "delivery_address": "24.85200, 55.16230", "distance_km": 65.79}, {"type": "case", "case_id": "PTC-8464", "ptc_order_id": "PTC-8464", "shipday_order_id": "", "maid_name": "MICHELLE RAYOSO BALTES", "requested_pickup_time": "2026-06-25, 10:53:00", "requested_delivery_time": "2026-06-25, 11:08:00", "weels_reason": "", "trip_cost": 30.6, "weels_trip_cost": 30.6, "final_category": "Replacement", "main_root_cause_summary": "She came as a replacement for GREATCHEN ALAPIDE BASANTA.", "final_reason": "She came as a replacement for GREATCHEN ALAPIDE BASANTA.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["She came as a replacement for GREATCHEN ALAPIDE BASANTA."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": false, "source_evidence": {"csv_row": 10, "original_reason": "Replacement", "notes": "She came as a replacement for GREATCHEN ALAPIDE BASANTA.", "matched_weel_order": {"orderId": "PTC-8464", "status": "ALREADY_DELIVERED", "passengerName": "MICHELLE RAYOSO BALTES", "requestedPickupTimeDubai": "2026-06-25, 10:53:00", "requestedDeliveryTimeDubai": "2026-06-25, 11:08:00", "tripCost": 30.6, "tripShareCost": null, "distanceKm": 12.51, "pickupAddress": "25.26876, 55.31951", "deliveryAddress": "25.20185, 55.27120"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "MICHELLE RAYOSO BALTES", "pickup_address": "25.26876, 55.31951", "delivery_address": "25.20185, 55.27120", "distance_km": 12.51}, {"type": "case", "case_id": "PTC-8435", "ptc_order_id": "PTC-8435", "shipday_order_id": "", "maid_name": "Menchie Ilarde Maguad", "requested_pickup_time": "2026-06-25, 11:15:00", "requested_delivery_time": "2026-06-25, 11:24:00", "weels_reason": "", "trip_cost": 19.74, "weels_trip_cost": 19.74, "final_category": "Replacement", "main_root_cause_summary": "She came as a replacement for Ma Cristina Millar Dalida.", "final_reason": "She came as a replacement for Ma Cristina Millar Dalida.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["She came as a replacement for Ma Cristina Millar Dalida."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": false, "source_evidence": {"csv_row": 11, "original_reason": "Replacement", "notes": "She came as a replacement for Ma Cristina Millar Dalida.", "matched_weel_order": {"orderId": "PTC-8435", "status": "ALREADY_DELIVERED", "passengerName": "Menchie Ilarde Maguad", "requestedPickupTimeDubai": "2026-06-25, 11:15:00", "requestedDeliveryTimeDubai": "2026-06-25, 11:24:00", "tripCost": 19.74, "tripShareCost": null, "distanceKm": 6.47, "pickupAddress": "25.20192, 55.25205", "deliveryAddress": "25.18928, 55.28917"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "Menchie Ilarde Maguad", "pickup_address": "25.20192, 55.25205", "delivery_address": "25.18928, 55.28917", "distance_km": 6.47}, {"type": "case", "case_id": "PTC-8398", "ptc_order_id": "PTC-8398", "shipday_order_id": "", "maid_name": "MARITA KAHENZANI MARIGI", "requested_pickup_time": "2026-06-25, 12:15:00", "requested_delivery_time": "2026-06-25, 12:35:00", "weels_reason": "", "trip_cost": 43.32, "weels_trip_cost": 43.32, "final_category": "Duty extended", "main_root_cause_summary": "The maid started her duty late, based on AE_CLEANERS CHATS: \"I arrived  at 9:21am from  there sir took  me for orientation, by the time I was starting  the work, it was late\". This planned taxi failed, anther unplanned Weel was booked.", "final_reason": "The maid started her duty late, based on AE_CLEANERS CHATS: \"I arrived  at 9:21am from  there sir took  me for orientation, by the time I was starting  the work, it was late\". This planned taxi failed, anther unplanned Weel was booked.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The maid started her duty late, based on AE_CLEANERS CHATS: \"I arrived  at 9:21am from  there sir took  me for orientation, by the time I was starting  the work, it was late\". This planned taxi failed, anther unplanned Weel was booked."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 12, "original_reason": "Duty Extended", "notes": "The maid started her duty late, based on AE_CLEANERS CHATS: \"I arrived  at 9:21am from  there sir took  me for orientation, by the time I was starting  the work, it was late\". This planned taxi failed, anther unplanned Weel was booked.", "matched_weel_order": {"orderId": "PTC-8398", "status": "FAILED_DELIVERY", "passengerName": "MARITA KAHENZANI MARIGI", "requestedPickupTimeDubai": "2026-06-25, 12:15:00", "requestedDeliveryTimeDubai": "2026-06-25, 12:35:00", "tripCost": 43.32, "tripShareCost": null, "distanceKm": 19.59, "pickupAddress": "25.03690, 55.27259", "deliveryAddress": "25.14936, 55.24612"}}, "weels_status": "FAILED_DELIVERY", "passenger_name": "MARITA KAHENZANI MARIGI", "pickup_address": "25.03690, 55.27259", "delivery_address": "25.14936, 55.24612", "distance_km": 19.59}, {"type": "case", "case_id": "PTC-8476", "ptc_order_id": "PTC-8476", "shipday_order_id": "", "maid_name": "MARICEL ANINIPOT CANCERAN", "requested_pickup_time": "2026-06-25, 13:03:00", "requested_delivery_time": "2026-06-25, 13:44:00", "weels_reason": "", "trip_cost": 93.24, "weels_trip_cost": 93.24, "final_category": "Maid faults", "main_root_cause_summary": "The maid did not accept to go by PT and required at least a partial Weel. The team then told her a taxi will pick her up from her room.", "final_reason": "The maid did not accept to go by PT and required at least a partial Weel. The team then told her a taxi will pick her up from her room.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The maid did not accept to go by PT and required at least a partial Weel. The team then told her a taxi will pick her up from her room."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 13, "original_reason": "Maid Faults", "notes": "The maid did not accept to go by PT and required at least a partial Weel. The team then told her a taxi will pick her up from her room.", "matched_weel_order": {"orderId": "PTC-8476", "status": "ALREADY_DELIVERED", "passengerName": "MARICEL ANINIPOT CANCERAN", "requestedPickupTimeDubai": "2026-06-25, 13:03:00", "requestedDeliveryTimeDubai": "2026-06-25, 13:44:00", "tripCost": 93.24, "tripShareCost": null, "distanceKm": 50.13, "pickupAddress": "25.26876, 55.32231", "deliveryAddress": "24.96279, 55.14322"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "MARICEL ANINIPOT CANCERAN", "pickup_address": "25.26876, 55.32231", "delivery_address": "24.96279, 55.14322", "distance_km": 50.13}, {"type": "case", "case_id": "PTC-8478", "ptc_order_id": "PTC-8478", "shipday_order_id": "", "maid_name": "Susan Tacal Moriente", "requested_pickup_time": "2026-06-25, 13:12:00", "requested_delivery_time": "2026-06-25, 13:33:00", "weels_reason": "", "trip_cost": 44.15, "weels_trip_cost": 44.15, "final_category": "Same-day changes", "main_root_cause_summary": "The booking was added the same day at 10:15 AM.", "final_reason": "The booking was added the same day at 10:15 AM.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The booking was added the same day at 10:15 AM."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": false, "source_evidence": {"csv_row": 14, "original_reason": "Same-day changes", "notes": "The booking was added the same day at 10:15 AM.", "matched_weel_order": {"orderId": "PTC-8478", "status": "ALREADY_DELIVERED", "passengerName": "Susan Tacal Moriente", "requestedPickupTimeDubai": "2026-06-25, 13:12:00", "requestedDeliveryTimeDubai": "2026-06-25, 13:33:00", "tripCost": 44.15, "tripShareCost": null, "distanceKm": 19.54, "pickupAddress": "25.14910, 55.24876", "deliveryAddress": "25.20942, 55.34660"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "Susan Tacal Moriente", "pickup_address": "25.14910, 55.24876", "delivery_address": "25.20942, 55.34660", "distance_km": 19.54}, {"type": "case", "case_id": "PTC-8469", "ptc_order_id": "PTC-8469", "shipday_order_id": "", "maid_name": "Daina Askalon Escartin", "requested_pickup_time": "2026-06-25, 13:15:00", "requested_delivery_time": "2026-06-25, 13:33:00", "weels_reason": "", "trip_cost": 37.67, "weels_trip_cost": 37.67, "final_category": "Maid left by herself", "main_root_cause_summary": "Based on AE_CLEANERS chat, the maid informed the team that she will return to her accomodation by public transportation.", "final_reason": "Based on AE_CLEANERS chat, the maid informed the team that she will return to her accomodation by public transportation.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["Based on AE_CLEANERS chat, the maid informed the team that she will return to her accomodation by public transportation."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": false, "source_evidence": {"csv_row": 15, "original_reason": "Maid Left by herself", "notes": "Based on AE_CLEANERS chat, the maid informed the team that she will return to her accomodation by public transportation.", "matched_weel_order": {"orderId": "PTC-8469", "status": "FAILED_DELIVERY", "passengerName": "Daina Askalon Escartin", "requestedPickupTimeDubai": "2026-06-25, 13:15:00", "requestedDeliveryTimeDubai": "2026-06-25, 13:33:00", "tripCost": 37.67, "tripShareCost": null, "distanceKm": 16.17, "pickupAddress": "25.07693, 55.16882", "deliveryAddress": "25.14936, 55.24612"}}, "weels_status": "FAILED_DELIVERY", "passenger_name": "Daina Askalon Escartin", "pickup_address": "25.07693, 55.16882", "delivery_address": "25.14936, 55.24612", "distance_km": 16.17}, {"type": "case", "case_id": "PTC-8485", "ptc_order_id": "PTC-8485", "shipday_order_id": "", "maid_name": "SHIELA ECHANO NEDEA", "requested_pickup_time": "2026-06-25, 13:56:00", "requested_delivery_time": "2026-06-25, 14:27:00", "weels_reason": "", "trip_cost": 64.88, "weels_trip_cost": 64.88, "final_category": "Maid faults", "main_root_cause_summary": "The planned route was public transport, but the maid did not have enough balance on her NOL card. Based on the AE_CLEANERS chat, she mentioned that she had informed the team about this earlier. She also asked whether the taxi cost would be deducted from her salary, and the team confirmed that it would not.", "final_reason": "The planned route was public transport, but the maid did not have enough balance on her NOL card. Based on the AE_CLEANERS chat, she mentioned that she had informed the team about this earlier. She also asked whether the taxi cost would be deducted from her salary, and the team confirmed that it would not.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The planned route was public transport, but the maid did not have enough balance on her NOL card. Based on the AE_CLEANERS chat, she mentioned that she had informed the team about this earlier. She also asked whether the taxi cost would be deducted from her salary, and the team confirmed that it would not."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 16, "original_reason": "Maid Faults", "notes": "The planned route was public transport, but the maid did not have enough balance on her NOL card. Based on the AE_CLEANERS chat, she mentioned that she had informed the team about this earlier. She also asked whether the taxi cost would be deducted from her salary, and the team confirmed that it would not.", "matched_weel_order": {"orderId": "PTC-8485", "status": "ALREADY_DELIVERED", "passengerName": "SHIELA ECHANO NEDEA", "requestedPickupTimeDubai": "2026-06-25, 13:56:00", "requestedDeliveryTimeDubai": "2026-06-25, 14:27:00", "tripCost": 64.88, "tripShareCost": null, "distanceKm": 32.21, "pickupAddress": "25.23072, 55.27199", "deliveryAddress": "25.03983, 55.19351"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "SHIELA ECHANO NEDEA", "pickup_address": "25.23072, 55.27199", "delivery_address": "25.03983, 55.19351", "distance_km": 32.21}, {"type": "case", "case_id": "PTC-8426", "ptc_order_id": "PTC-8426", "shipday_order_id": "", "maid_name": "EDDELYN AZUPARDO DANAO", "requested_pickup_time": "2026-06-25, 14:15:00", "requested_delivery_time": "2026-06-25, 14:32:00", "weels_reason": "", "trip_cost": 35.12, "weels_trip_cost": 35.12, "final_category": "Maid left by herself", "main_root_cause_summary": "The maid left the booking by herself", "final_reason": "The maid left the booking by herself", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The maid left the booking by herself"], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": false, "source_evidence": {"csv_row": 17, "original_reason": "Maid Left by herself", "notes": "The maid left the booking by herself", "matched_weel_order": {"orderId": "PTC-8426", "status": "FAILED_DELIVERY", "passengerName": "EDDELYN AZUPARDO DANAO", "requestedPickupTimeDubai": "2026-06-25, 14:15:00", "requestedDeliveryTimeDubai": "2026-06-25, 14:32:00", "tripCost": 35.12, "tripShareCost": null, "distanceKm": 14.84, "pickupAddress": "25.10852, 55.14384", "deliveryAddress": "25.14936, 55.24612"}}, "weels_status": "FAILED_DELIVERY", "passenger_name": "EDDELYN AZUPARDO DANAO", "pickup_address": "25.10852, 55.14384", "delivery_address": "25.14936, 55.24612", "distance_km": 14.84}, {"type": "case", "case_id": "PTC-8502", "ptc_order_id": "PTC-8502", "shipday_order_id": "", "maid_name": "Charice Jill Ababa Emphasis", "requested_pickup_time": "2026-06-25, 14:57:00", "requested_delivery_time": "2026-06-25, 15:16:00", "weels_reason": "", "trip_cost": 31.77, "weels_trip_cost": 31.77, "final_category": "Maid faults", "main_root_cause_summary": "The maid was unresponsive", "final_reason": "The maid was unresponsive", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The maid was unresponsive"], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 18, "original_reason": "Maid Faults", "notes": "The maid was unresponsive", "matched_weel_order": {"orderId": "PTC-8502", "status": "ALREADY_DELIVERED", "passengerName": "Charice Jill Ababa Emphasis", "requestedPickupTimeDubai": "2026-06-25, 14:57:00", "requestedDeliveryTimeDubai": "2026-06-25, 15:16:00", "tripCost": 31.77, "tripShareCost": 28.18, "distanceKm": 13.09, "pickupAddress": "25.19741, 55.27137", "deliveryAddress": "25.13702, 55.31173"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "Charice Jill Ababa Emphasis", "pickup_address": "25.19741, 55.27137", "delivery_address": "25.13702, 55.31173", "distance_km": 13.09}, {"type": "case", "case_id": "PTC-8507", "ptc_order_id": "PTC-8507", "shipday_order_id": "", "maid_name": "MICHELLE RAYOSO BALTES", "requested_pickup_time": "2026-06-25, 15:12:00", "requested_delivery_time": "2026-06-25, 15:29:00", "weels_reason": "", "trip_cost": 39.25, "weels_trip_cost": 39.25, "final_category": "Replacement", "main_root_cause_summary": "She came as a replacement for GREATCHEN ALAPIDE BASANTA.", "final_reason": "She came as a replacement for GREATCHEN ALAPIDE BASANTA.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["She came as a replacement for GREATCHEN ALAPIDE BASANTA."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": false, "source_evidence": {"csv_row": 19, "original_reason": "Replacement", "notes": "She came as a replacement for GREATCHEN ALAPIDE BASANTA.", "matched_weel_order": {"orderId": "PTC-8507", "status": "ALREADY_DELIVERED", "passengerName": "MICHELLE RAYOSO BALTES", "requestedPickupTimeDubai": "2026-06-25, 15:12:00", "requestedDeliveryTimeDubai": "2026-06-25, 15:29:00", "tripCost": 39.25, "tripShareCost": 36.48, "distanceKm": 17.52, "pickupAddress": "25.20137, 55.27095", "deliveryAddress": "25.20974, 55.34547"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "MICHELLE RAYOSO BALTES", "pickup_address": "25.20137, 55.27095", "delivery_address": "25.20974, 55.34547", "distance_km": 17.52}, {"type": "case", "case_id": "PTC-8483", "ptc_order_id": "PTC-8483", "shipday_order_id": "", "maid_name": "CONIE YULO DUBA", "requested_pickup_time": "2026-06-25, 15:15:00", "requested_delivery_time": "2026-06-25, 15:25:00", "weels_reason": "", "trip_cost": 20.45, "weels_trip_cost": 20.45, "final_category": "Maid faults", "main_root_cause_summary": "The maid decided to go home after her next booking instead of going directly to the second client, which cause the planned Weel order to fail. Another unplanned Weel order was booked to take her from her accomodation to her next client (PTC-8516).", "final_reason": "The maid decided to go home after her next booking instead of going directly to the second client, which cause the planned Weel order to fail. Another unplanned Weel order was booked to take her from her accomodation to her next client (PTC-8516).", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The maid decided to go home after her next booking instead of going directly to the second client, which cause the planned Weel order to fail. Another unplanned Weel order was booked to take her from her accomodation to her next client (PTC-8516)."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 20, "original_reason": "Maid Faults", "notes": "The maid decided to go home after her next booking instead of going directly to the second client, which cause the planned Weel order to fail. Another unplanned Weel order was booked to take her from her accomodation to her next client (PTC-8516).", "matched_weel_order": {"orderId": "PTC-8483", "status": "FAILED_DELIVERY", "passengerName": "CONIE YULO DUBA", "requestedPickupTimeDubai": "2026-06-25, 15:15:00", "requestedDeliveryTimeDubai": "2026-06-25, 15:25:00", "tripCost": 20.45, "tripShareCost": null, "distanceKm": 7.17, "pickupAddress": "25.18338, 55.26672", "deliveryAddress": "25.22855, 55.27528"}}, "weels_status": "FAILED_DELIVERY", "passenger_name": "CONIE YULO DUBA", "pickup_address": "25.18338, 55.26672", "delivery_address": "25.22855, 55.27528", "distance_km": 7.17}, {"type": "case", "case_id": "PTC-8513", "ptc_order_id": "PTC-8513", "shipday_order_id": "", "maid_name": "Rhodora Antoque Caluyan", "requested_pickup_time": "2026-06-25, 15:50:00", "requested_delivery_time": "2026-06-25, 16:45:00", "weels_reason": "", "trip_cost": 68.75, "weels_trip_cost": 68.75, "final_category": "Maid faults", "main_root_cause_summary": "Planned route was PT. At 2:15 PM, the team contacted the maid to check if she was on her way, but she was behind, so they sent her a taxi to take her to her second client.", "final_reason": "Planned route was PT. At 2:15 PM, the team contacted the maid to check if she was on her way, but she was behind, so they sent her a taxi to take her to her second client.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["Planned route was PT. At 2:15 PM, the team contacted the maid to check if she was on her way, but she was behind, so they sent her a taxi to take her to her second client."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 21, "original_reason": "Maid Faults", "notes": "Planned route was PT. At 2:15 PM, the team contacted the maid to check if she was on her way, but she was behind, so they sent her a taxi to take her to her second client.", "matched_weel_order": {"orderId": "PTC-8513", "status": "ALREADY_DELIVERED", "passengerName": "Rhodora Antoque Caluyan", "requestedPickupTimeDubai": "2026-06-25, 15:50:00", "requestedDeliveryTimeDubai": "2026-06-25, 16:45:00", "tripCost": 68.75, "tripShareCost": null, "distanceKm": 32.0, "pickupAddress": "25.11970, 55.19998", "deliveryAddress": "25.27582, 55.36990"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "Rhodora Antoque Caluyan", "pickup_address": "25.11970, 55.19998", "delivery_address": "25.27582, 55.36990", "distance_km": 32.0}, {"type": "case", "case_id": "PTC-8436", "ptc_order_id": "PTC-8436", "shipday_order_id": "", "maid_name": "MENCHIE ILARDE MAGUAD", "requested_pickup_time": "2026-06-25, 16:15:00", "requested_delivery_time": "2026-06-25, 16:29:00", "weels_reason": "", "trip_cost": 27.52, "weels_trip_cost": 27.52, "final_category": "Replacement", "main_root_cause_summary": "She came as a replacement for Ma Cristina Millar Dalida.", "final_reason": "She came as a replacement for Ma Cristina Millar Dalida.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["She came as a replacement for Ma Cristina Millar Dalida."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": false, "source_evidence": {"csv_row": 22, "original_reason": "Replacement", "notes": "She came as a replacement for Ma Cristina Millar Dalida.", "matched_weel_order": {"orderId": "PTC-8436", "status": "ALREADY_DELIVERED", "passengerName": "MENCHIE ILARDE MAGUAD", "requestedPickupTimeDubai": "2026-06-25, 16:15:00", "requestedDeliveryTimeDubai": "2026-06-25, 16:29:00", "tripCost": 27.52, "tripShareCost": 27.52, "distanceKm": 9.05, "pickupAddress": "25.18928, 55.28917", "deliveryAddress": "25.20192, 55.25205"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "MENCHIE ILARDE MAGUAD", "pickup_address": "25.18928, 55.28917", "delivery_address": "25.20192, 55.25205", "distance_km": 9.05}, {"type": "case", "case_id": "PTC-8521", "ptc_order_id": "PTC-8521", "shipday_order_id": "", "maid_name": "JONA PURACAN JABAGAT", "requested_pickup_time": "2026-06-25, 16:42:00", "requested_delivery_time": "2026-06-25, 17:21:00", "weels_reason": "", "trip_cost": 82.79, "weels_trip_cost": 82.79, "final_category": "Needs review", "main_root_cause_summary": "The maid's name does not show in the cleaner management module neither in the PTC planned routes. Based on Janine's sheet, planned route was PT.", "final_reason": "The maid's name does not show in the cleaner management module neither in the PTC planned routes. Based on Janine's sheet, planned route was PT.", "confidence": "needs review", "needs_manual_review": true, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["The maid's name does not show in the cleaner management module neither in the PTC planned routes. Based on Janine's sheet, planned route was PT."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 23, "original_reason": "NEEDS REVIEW", "notes": "The maid's name does not show in the cleaner management module neither in the PTC planned routes. Based on Janine's sheet, planned route was PT.", "matched_weel_order": {"orderId": "PTC-8521", "status": "ALREADY_DELIVERED", "passengerName": "JONA PURACAN JABAGAT", "requestedPickupTimeDubai": "2026-06-25, 16:42:00", "requestedDeliveryTimeDubai": "2026-06-25, 17:21:00", "tripCost": 82.79, "tripShareCost": null, "distanceKm": 40.65, "pickupAddress": "25.22755, 55.27385", "deliveryAddress": "25.00306, 55.29071"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "JONA PURACAN JABAGAT", "pickup_address": "25.22755, 55.27385", "delivery_address": "25.00306, 55.29071", "distance_km": 40.65}, {"type": "case", "case_id": "PTC-8522", "ptc_order_id": "PTC-8522", "shipday_order_id": "", "maid_name": "DESA CAMROT SALAZAR", "requested_pickup_time": "2026-06-25, 16:47:00", "requested_delivery_time": "2026-06-25, 18:03:00", "weels_reason": "", "trip_cost": 86.38, "weels_trip_cost": 86.38, "final_category": "Same-day changes", "main_root_cause_summary": "Based on AE_CLEANERS chat, the maid went to her booking by PT as instructed, but the client did not open the door. The team then organized another duty for her and arranged a Taxi for her.", "final_reason": "Based on AE_CLEANERS chat, the maid went to her booking by PT as instructed, but the client did not open the door. The team then organized another duty for her and arranged a Taxi for her.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["Based on AE_CLEANERS chat, the maid went to her booking by PT as instructed, but the client did not open the door. The team then organized another duty for her and arranged a Taxi for her."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": false, "source_evidence": {"csv_row": 24, "original_reason": "Same-day changes", "notes": "Based on AE_CLEANERS chat, the maid went to her booking by PT as instructed, but the client did not open the door. The team then organized another duty for her and arranged a Taxi for her.", "matched_weel_order": {"orderId": "PTC-8522", "status": "ALREADY_DELIVERED", "passengerName": "DESA CAMROT SALAZAR", "requestedPickupTimeDubai": "2026-06-25, 16:47:00", "requestedDeliveryTimeDubai": "2026-06-25, 18:03:00", "tripCost": 86.38, "tripShareCost": null, "distanceKm": 37.22, "pickupAddress": "25.05842, 55.20428", "deliveryAddress": "25.22832, 55.41135"}}, "weels_status": "ALREADY_DELIVERED", "passenger_name": "DESA CAMROT SALAZAR", "pickup_address": "25.05842, 55.20428", "delivery_address": "25.22832, 55.41135", "distance_km": 37.22}, {"type": "case", "case_id": "PTC-8484", "ptc_order_id": "PTC-8484", "shipday_order_id": "", "maid_name": "CONIE YULO DUBA", "requested_pickup_time": "2026-06-25, 20:20:00", "requested_delivery_time": "2026-06-25, 20:31:00", "weels_reason": "", "trip_cost": 30.64, "weels_trip_cost": 30.64, "final_category": "Operation mistake", "main_root_cause_summary": "Wrong pickup location. pickup and dropoff were confused.", "final_reason": "Wrong pickup location. pickup and dropoff were confused.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["Wrong pickup location. pickup and dropoff were confused."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": true, "source_evidence": {"csv_row": 25, "original_reason": "Ops Mistake", "notes": "Wrong pickup location. pickup and dropoff were confused.", "matched_weel_order": {"orderId": "PTC-8484", "status": "FAILED_DELIVERY", "passengerName": "CONIE YULO DUBA", "requestedPickupTimeDubai": "2026-06-25, 20:20:00", "requestedDeliveryTimeDubai": "2026-06-25, 20:31:00", "tripCost": 30.64, "tripShareCost": null, "distanceKm": 12.04, "pickupAddress": "25.22855, 55.27528", "deliveryAddress": "25.18338, 55.26672"}}, "weels_status": "FAILED_DELIVERY", "passenger_name": "CONIE YULO DUBA", "pickup_address": "25.22855, 55.27528", "delivery_address": "25.18338, 55.26672", "distance_km": 12.04}, {"type": "case", "case_id": "PTC-8560", "ptc_order_id": "PTC-8560", "shipday_order_id": "", "maid_name": "CONIE YULO DUBA", "requested_pickup_time": "2026-06-25, 20:54:00", "requested_delivery_time": "2026-06-25, 21:07:00", "weels_reason": "", "trip_cost": 25.8, "weels_trip_cost": 25.8, "final_category": "Maid left by herself", "main_root_cause_summary": "After requesting a taxi, the maid ended up leaving by herself.", "final_reason": "After requesting a taxi, the maid ended up leaving by herself.", "confidence": "reviewed", "needs_manual_review": false, "responsibility": "", "recommended_action": "", "manual_notes": "", "evidence_used": [], "evidence_summary": ["After requesting a taxi, the maid ended up leaving by herself."], "secondary_issues": [], "not_used_as_evidence": [], "missing_or_unclear_information": [], "contradictions_or_uncertainties": [], "parse_error": false, "parse_error_message": "", "same_day_conversation_ids": [], "day_before_conversation_ids": [], "cleaner_conversation_ids": [], "cleaner_conversation_count": 0, "include_in_weels_losses": false, "source_evidence": {"csv_row": 26, "original_reason": "Maid left by herself", "notes": "After requesting a taxi, the maid ended up leaving by herself.", "matched_weel_order": {"orderId": "PTC-8560", "status": "FAILED_DELIVERY", "passengerName": "CONIE YULO DUBA", "requestedPickupTimeDubai": "2026-06-25, 20:54:00", "requestedDeliveryTimeDubai": "2026-06-25, 21:07:00", "tripCost": 25.8, "tripShareCost": null, "distanceKm": 12.27, "pickupAddress": "25.18564, 55.28576", "deliveryAddress": "25.22855, 55.27528"}}, "weels_status": "FAILED_DELIVERY", "passenger_name": "CONIE YULO DUBA", "pickup_address": "25.18564, 55.28576", "delivery_address": "25.22855, 55.27528", "distance_km": 12.27}]</script>
+  <script id="initial-metrics-json" type="application/json">{"working_hours": 518.0, "number_of_cleaners": 0, "pt_cost": 876.08, "careem_cost": 42.0, "total_weel_cost": 4823.18, "total_losses": 960.85, "total_cases": 25, "failed_weels_orders_count": 25, "total_transpo_cost": 5741.26, "transpo_cost_per_hour": 11.083513513513514, "failed_weel_cost": 960.85, "total_working_hours": 518.0}</script>
+
+  <script>
+    const REPORT_ID = "2026-06-25-unplanned-reviewed-losses-filled-careem-42-save-v2";
+    const STORAGE_KEY = "unplanned_weels_editable_report_state_" + REPORT_ID + "_pt_876_08_hours_518_00_careem_42";
+
+    const initialCases = JSON.parse(document.getElementById("initial-cases-json").textContent || "[]");
+    const initialMetrics = JSON.parse(document.getElementById("initial-metrics-json").textContent || "{}");
+
+    let reportCases = [];
+    let reportMetrics = {};
+    let selectedCategory = "ALL";
+
+    const allowedCategories = [
+      "Operation mistake",
+      "Maid faults",
+      "Duty extended",
+      "Weels issue",
+      "Replacement",
+      "Same-day changes",
+      "Maid left by herself",
+      "Needs review",
+      "Booking cancelled",
+      "Unknown"
+    ];
+
+    function deepClone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          reportCases = Array.isArray(parsed.reportCases) ? parsed.reportCases : deepClone(initialCases);
+          reportMetrics = parsed.reportMetrics || deepClone(initialMetrics);
+
+          if ((!reportCases || reportCases.length === 0) && initialCases.length > 0) {
+            reportCases = deepClone(initialCases);
+            reportMetrics = deepClone(initialMetrics);
+          }
+        } catch (error) {
+          reportCases = deepClone(initialCases);
+          reportMetrics = deepClone(initialMetrics);
+        }
+      } else {
+        reportCases = deepClone(initialCases);
+        reportMetrics = deepClone(initialMetrics);
+      }
+
+      if (!reportMetrics) reportMetrics = {};
+      if (reportMetrics.careem_cost === undefined) reportMetrics.careem_cost = 0;
+
+      document.getElementById("careemCostInput").value = Number(reportMetrics.careem_cost || 0);
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        reportCases: reportCases,
+        reportMetrics: reportMetrics,
+        savedAt: new Date().toISOString()
+      }));
+
+      const status = document.getElementById("saveStatus");
+      if (status) {
+        status.textContent = "Saved locally at " + new Date().toLocaleTimeString();
+      }
+
+      calculateMetrics();
+    }
+
+    function manualSaveState() {
+      saveState();
+      renderReport();
+    }
+
+    function resetChanges() {
+      if (!confirm("Reset all manual edits and return to the original generated report?")) return;
+
+      localStorage.removeItem(STORAGE_KEY);
+      reportCases = deepClone(initialCases);
+      reportMetrics = deepClone(initialMetrics);
+      document.getElementById("careemCostInput").value = Number(reportMetrics.careem_cost || 0);
+      selectedCategory = "ALL";
+      renderReport();
+    }
+
+    function formatMoney(value) {
+      const n = Number(value || 0);
+      return n.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + " AED";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/\n/g, " ");
+    }
+
+    function normalizeCategory(category) {
+      const raw = String(category || "").trim();
+      const lower = raw.toLowerCase();
+
+      if (lower === "ops mistake" || lower === "operation mistake" || lower === "operation mistakes") return "Operation mistake";
+      if (lower === "replacement" || lower === "replacement issue" || lower === "replacement-related") return "Replacement";
+      if (lower === "weels issue" || lower === "weels problem" || lower === "weel problem") return "Weels issue";
+
+      if (
+        lower === "maid faults" ||
+        lower === "maid fault" ||
+        lower === "maid refusal" ||
+        lower === "maid unresponsive" ||
+        lower === "maid claimed sick" ||
+        lower === "maid sick"
+      ) {
+        return "Maid faults";
+      }
+
+      if (lower === "maid left by herself") return "Maid left by herself";
+      if (lower === "same-day changes" || lower === "same day changes" || lower === "same-day change" || lower === "same day change") return "Same-day changes";
+      if (lower === "duty extended" || lower === "duty extension") return "Duty extended";
+      if (lower === "needs review" || lower === "needs_review") return "Needs review";
+      if (
+        lower === "booking cancelled" ||
+        lower === "booking canceled" ||
+        lower === "client cancelled" ||
+        lower === "client canceled"
+      ) {
+        return "Booking cancelled";
+      }
+
+      if (lower === "unknown") return "Unknown";
+
+      return raw || "Unknown";
+    }
+
+    function includeInWeelsLosses(item) {
+      const category = normalizeCategory(item.final_category);
+
+      if (category === "Booking cancelled") return false;
+      if (category === "Maid left by herself") return false;
+      if (category === "Same-day changes") return false;
+      if (category === "Replacement") return false;
+      if (item.include_in_weels_losses === false) return false;
+
+      return true;
+    }
+
+    function getCaseById(caseId) {
+      const key = String(caseId);
+      return reportCases.find(function(item) {
+        return String(item.case_id) === key || String(item.ptc_order_id) === key;
+      });
+    }
+
+    function updateCareemCost() {
+      reportMetrics.careem_cost = Number(document.getElementById("careemCostInput").value || 0);
+      saveState();
+      calculateMetrics();
+    }
+
+    function calculateMetrics() {
+      const totalCases = reportCases.length;
+      const weelCost = Number(reportMetrics.total_weel_cost || reportMetrics.weel_cost || 0);
+      const ptCost = Number(reportMetrics.pt_cost || 0);
+      const careemCost = Number(reportMetrics.careem_cost || 0);
+      const workingHours = Number(reportMetrics.working_hours || reportMetrics.total_working_hours || 0);
+
+      const failedWeelCost = reportCases
+        .filter(includeInWeelsLosses)
+        .reduce(function(sum, item) {
+          return sum + Number(item.trip_cost || item.weels_trip_cost || 0);
+        }, 0);
+
+      reportMetrics.total_losses = failedWeelCost;
+      reportMetrics.failed_weel_cost = failedWeelCost;
+
+      const totalTranspoCost = weelCost + ptCost + careemCost;
+      const costPerHour = workingHours > 0 ? totalTranspoCost / workingHours : 0;
+
+      document.getElementById("weelCost").textContent = weelCost.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById("ptCost").textContent = ptCost.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      document.getElementById("failedWeelCost").textContent = formatMoney(failedWeelCost);
+      document.getElementById("totalTranspoCost").textContent = formatMoney(totalTranspoCost);
+      document.getElementById("totalCases").textContent = totalCases;
+      document.getElementById("costPerHour").textContent = costPerHour.toFixed(2) + " AED/hr";
+
+      const formulaEl = document.getElementById("costPerHourFormula");
+      if (formulaEl) {
+        formulaEl.textContent = formatMoney(totalTranspoCost) + " ÷ " + workingHours.toFixed(2) + " booking hrs";
+      }
+
+      const totalCasesNoteEl = document.getElementById("totalCasesNote");
+      if (totalCasesNoteEl) {
+        totalCasesNoteEl.textContent = "Unplanned Weels cases";
+      }
+
+      const lossesNoteEl = document.getElementById("lossesNote");
+      if (lossesNoteEl) {
+        const lossCount = reportCases.filter(includeInWeelsLosses).length;
+        lossesNoteEl.textContent = lossCount + " case" + (lossCount === 1 ? "" : "s") + " counted";
+      }
+    }
+
+    function getFilteredCases() {
+      const search = String(document.getElementById("searchInput").value || "").toLowerCase().trim();
+
+      return reportCases.filter(function(item) {
+        const category = normalizeCategory(item.final_category);
+
+        if (selectedCategory !== "ALL" && category !== selectedCategory) return false;
+
+        if (!search) return true;
+
+        const haystack = [
+          item.ptc_order_id,
+          item.shipday_order_id,
+          item.maid_name,
+          item.requested_pickup_time,
+          item.weels_reason,
+          item.final_category,
+          item.main_root_cause_summary,
+          item.final_reason,
+          Array.isArray(item.cleaner_conversation_ids) ? item.cleaner_conversation_ids.join(" ") : ""
+        ].join(" ").toLowerCase();
+
+        return haystack.includes(search);
+      });
+    }
+
+    function groupCases(casesList) {
+      const grouped = {};
+
+      casesList.forEach(function(item) {
+        const category = normalizeCategory(item.final_category);
+
+        if (!grouped[category]) {
+          grouped[category] = {
+            name: category,
+            cases: [],
+            totalCost: 0,
+            failedLossCost: 0
+          };
+        }
+
+        grouped[category].cases.push(item);
+        grouped[category].totalCost += Number(item.trip_cost || item.weels_trip_cost || 0);
+
+        if (includeInWeelsLosses(item)) {
+          grouped[category].failedLossCost += Number(item.trip_cost || item.weels_trip_cost || 0);
+        }
+      });
+
+      return Object.values(grouped).sort(function(a, b) {
+        return a.name.localeCompare(b.name);
+      });
+    }
+
+    const CATEGORY_RANK_COLORS = {
+      largest: "#dc2626",
+      second: "#ea580c",
+      grays: ["#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9"]
+    };
+
+    let categoryColorMap = {};
+
+    function computeCategoryColors() {
+      const grouped = groupCases(reportCases)
+        .filter(function(g) {
+          return g.failedLossCost > 0.001;
+        })
+        .sort(function(a, b) {
+          return b.failedLossCost - a.failedLossCost;
+        });
+
+      const map = {};
+
+      grouped.forEach(function(g, index) {
+        if (index === 0) {
+          map[g.name] = CATEGORY_RANK_COLORS.largest;
+        } else if (index === 1) {
+          map[g.name] = CATEGORY_RANK_COLORS.second;
+        } else {
+          map[g.name] = CATEGORY_RANK_COLORS.grays[Math.min(index - 2, CATEGORY_RANK_COLORS.grays.length - 1)];
+        }
+      });
+
+      groupCases(reportCases).forEach(function(g) {
+        if (!map[g.name]) {
+          map[g.name] = CATEGORY_RANK_COLORS.grays[CATEGORY_RANK_COLORS.grays.length - 1];
+        }
+      });
+
+      categoryColorMap = map;
+      return map;
+    }
+
+    function categoryColor(name) {
+      return categoryColorMap[name] || CATEGORY_RANK_COLORS.grays[CATEGORY_RANK_COLORS.grays.length - 1];
+    }
+
+    let expandedCaseId = null;
+
+    const GREY_LOSS_CATEGORIES = ["Booking cancelled", "Maid left by herself", "Same-day changes", "Replacement"];
+
+    function categoryNavLoss(group) {
+      if (GREY_LOSS_CATEGORIES.indexOf(group.name) !== -1) {
+        return group.totalCost;
+      }
+
+      return group.failedLossCost;
+    }
+
+    function categoryNavLossClass(name) {
+      return GREY_LOSS_CATEGORIES.indexOf(name) !== -1 ? "loss-grey" : "loss-red";
+    }
+
+    function renderCategories() {
+      const allGrouped = groupCases(reportCases).slice().sort(function(a, b) {
+        return categoryNavLoss(b) - categoryNavLoss(a);
+      });
+      const categoryList = document.getElementById("categoryList");
+
+      const totalLoss = reportCases
+        .filter(includeInWeelsLosses)
+        .reduce(function(sum, item) {
+          return sum + Number(item.trip_cost || item.weels_trip_cost || 0);
+        }, 0);
+
+      let html = "";
+
+      html += '<button class="pill ' + (selectedCategory === "ALL" ? "active" : "") + '" onclick="selectCategory(\'ALL\')">';
+      html += '<span class="nav-label">All</span>';
+      html += '<span class="pill-meta"><span class="loss-amt loss-red">' + formatMoney(totalLoss) + '</span>';
+      html += '<span class="case-count">' + reportCases.length + '</span></span></button>';
+
+      allGrouped.forEach(function(group) {
+        html += '<button class="pill ' + (selectedCategory === group.name ? "active" : "") + '" onclick="selectCategory(\'' + escapeAttr(group.name) + '\')">';
+        html += '<span class="nav-label"><span class="legend-dot" style="background:' + categoryColor(group.name) + '"></span>' + escapeHtml(group.name) + '</span>';
+        html += '<span class="pill-meta"><span class="loss-amt ' + categoryNavLossClass(group.name) + '">' + formatMoney(categoryNavLoss(group)) + '</span>';
+        html += '<span class="case-count">' + group.cases.length + '</span></span></button>';
+      });
+
+      categoryList.innerHTML = html;
+    }
+
+    function renderLossBar() {
+      const grouped = groupCases(reportCases).filter(function(g) {
+        return g.failedLossCost > 0.001;
+      }).sort(function(a, b) {
+        return b.failedLossCost - a.failedLossCost;
+      });
+
+      const total = grouped.reduce(function(sum, g) {
+        return sum + g.failedLossCost;
+      }, 0);
+
+      const barEl = document.getElementById("lossBar");
+      const legendEl = document.getElementById("lossLegend");
+      const totalEl = document.getElementById("lossBarTotal");
+
+      if (totalEl) totalEl.textContent = formatMoney(total) + " across " + grouped.length + " categor" + (grouped.length === 1 ? "y" : "ies");
+
+      if (!total) {
+        barEl.innerHTML = "";
+        legendEl.innerHTML = '<span class="legend-val">No counted losses.</span>';
+        return;
+      }
+
+      barEl.innerHTML = grouped.map(function(g) {
+        const pct = (g.failedLossCost / total) * 100;
+        return '<div class="lossbar-seg" style="width:' + pct.toFixed(2) + '%;background:' + categoryColor(g.name) + '" title="' + escapeAttr(g.name + ": " + formatMoney(g.failedLossCost)) + '"></div>';
+      }).join("");
+
+      legendEl.innerHTML = grouped.map(function(g) {
+        const pct = (g.failedLossCost / total) * 100;
+        return '<span class="legend-item"><span class="legend-dot" style="background:' + categoryColor(g.name) + '"></span>' +
+          '<span class="legend-name">' + escapeHtml(g.name) + '</span>' +
+          '<span class="legend-val">' + formatMoney(g.failedLossCost) + ' · ' + pct.toFixed(0) + '%</span></span>';
+      }).join("");
+    }
+
+    function selectCategory(category) {
+      selectedCategory = category;
+      expandedCaseId = null;
+      renderReport();
+    }
+
+    function renderReport() {
+      reportCases.forEach(function(item) {
+        item.final_category = normalizeCategory(item.final_category);
+      });
+
+      calculateMetrics();
+      computeCategoryColors();
+      renderCategories();
+      renderLossBar();
+
+      const filtered = getFilteredCases();
+      const reportContent = document.getElementById("reportContent");
+
+      const tableCountEl = document.getElementById("tableCount");
+      if (tableCountEl) {
+        const shownLoss = filtered.filter(includeInWeelsLosses).reduce(function(sum, item) {
+          return sum + Number(item.trip_cost || item.weels_trip_cost || 0);
+        }, 0);
+        tableCountEl.textContent = filtered.length + " shown · " + formatMoney(shownLoss) + " loss";
+      }
+
+      if (!filtered.length) {
+        reportContent.innerHTML = '<div class="empty-state">No cases match the current filters.</div>';
+        return;
+      }
+
+      const sorted = filtered.slice().sort(function(a, b) {
+        const ca = Number(a.trip_cost || a.weels_trip_cost || 0);
+        const cb = Number(b.trip_cost || b.weels_trip_cost || 0);
+        return cb - ca;
+      });
+
+      reportContent.innerHTML = sorted.map(renderCaseCard).join("");
+      autoResizeAllTextareas(reportContent);
+    }
+
+    function autoResizeTextarea(el) {
+      if (!el) return;
+      el.style.height = "auto";
+      el.style.height = el.scrollHeight + "px";
+    }
+
+    function autoResizeAllTextareas(root) {
+      const scope = root || document;
+      scope.querySelectorAll(".cc-field textarea").forEach(autoResizeTextarea);
+    }
+
+    function renderCaseCard(item) {
+      const id = String(item.case_id || item.ptc_order_id || "");
+      const isLoss = includeInWeelsLosses(item);
+      const category = normalizeCategory(item.final_category);
+      const categoryOptions = getCategoryOptions(item.final_category);
+      const costValue = Number(item.trip_cost || item.weels_trip_cost || 0);
+      const conversationCount = Number(item.cleaner_conversation_count || 0);
+      const maid = String(item.maid_name || "—");
+      const pickup = String(item.requested_pickup_time || "—");
+
+      let html = "";
+
+      html += '<article class="case-card" style="border-top:3px solid ' + categoryColor(category) + '">';
+
+      html += '<div class="cc-head">';
+      html += '<div class="cc-id"><strong>' + escapeHtml(item.ptc_order_id || item.case_id || "No PTC") + '</strong>';
+      html += '<span class="badge ' + (isLoss ? "loss" : "no-loss") + '">' + (isLoss ? "Loss" : "Excluded") + '</span>';
+      if (item.needs_manual_review) {
+        html += '<span class="badge review">Review</span>';
+      }
+      html += '</div>';
+      html += '<div class="cc-cost cost' + (costValue ? "" : " zero") + '">' + formatMoney(costValue) + '</div>';
+      html += '</div>';
+
+      html += '<div class="cc-meta">';
+      html += '<span><b>Maid:</b> ' + escapeHtml(maid) + '</span>';
+      html += '<span><b>Pickup:</b> ' + escapeHtml(pickup) + '</span>';
+      html += '<span><b>Conversations:</b> ' + conversationCount + '</span>';
+      html += '</div>';
+
+      html += '<div class="cc-field"><label>Root Cause Summary</label>';
+      html += '<textarea oninput="autoResizeTextarea(this)" onchange="updateCaseField(\'' + escapeAttr(id) + '\', \'main_root_cause_summary\', this.value)">' + escapeHtml(item.main_root_cause_summary || "") + '</textarea></div>';
+
+      html += '<div class="cc-footer">';
+      html += '<span class="cc-cat"><span class="legend-dot" style="background:' + categoryColor(category) + '"></span>';
+      html += '<select onchange="updateCategory(\'' + escapeAttr(id) + '\', this.value)">' + categoryOptions + '</select></span>';
+      html += '<button class="btn-link" onclick="openMoreDetails(\'' + escapeAttr(id) + '\')">Full analysis &amp; conversations</button>';
+      html += '</div>';
+
+      html += '</article>';
+
+      return html;
+    }
+
+    function getCategoryOptions(currentCategory) {
+      const normalizedCurrent = normalizeCategory(currentCategory);
+      const categories = allowedCategories.slice();
+
+      if (!categories.includes(normalizedCurrent)) {
+        categories.push(normalizedCurrent);
+      }
+
+      return categories.map(function(category) {
+        return '<option value="' + escapeAttr(category) + '" ' + (category === normalizedCurrent ? "selected" : "") + '>' + escapeHtml(category) + '</option>';
+      }).join("");
+    }
+
+    function updateCaseField(caseId, field, value) {
+      const item = getCaseById(caseId);
+      if (!item) return;
+
+      item[field] = value;
+      saveState();
+      renderReport();
+    }
+
+    function updateCaseNumberField(caseId, field, value) {
+      const item = getCaseById(caseId);
+      if (!item) return;
+
+      item[field] = Number(value || 0);
+      item.weels_trip_cost = Number(value || 0);
+      saveState();
+      renderReport();
+    }
+
+    function updateCategory(caseId, value) {
+      const item = getCaseById(caseId);
+      if (!item) return;
+
+      item.final_category = normalizeCategory(value);
+
+      if (
+        item.final_category === "Booking cancelled" ||
+        item.final_category === "Maid left by herself" ||
+        item.final_category === "Same-day changes" ||
+        item.final_category === "Replacement"
+      ) {
+        item.include_in_weels_losses = false;
+      } else {
+        item.include_in_weels_losses = true;
+      }
+
+      saveState();
+      renderReport();
+    }
+
+    function renderList(value) {
+      const arr = Array.isArray(value) ? value : value ? [value] : [];
+
+      if (!arr.length) return "<p>No items.</p>";
+
+      return "<ul>" + arr.map(function(item) {
+        return "<li>" + escapeHtml(typeof item === "string" ? item : JSON.stringify(item)) + "</li>";
+      }).join("") + "</ul>";
+    }
+
+    function renderConversationPills(ids) {
+      const arr = Array.isArray(ids) ? ids : [];
+
+      if (!arr.length) {
+        return '<div class="no-conversations">No conversation IDs found.</div>';
+      }
+
+      return '<div class="conversation-id-list">' + arr.map(function(id) {
+        return '<span class="conversation-id-pill">' + escapeHtml(id) + '</span>';
+      }).join("") + '</div>';
+    }
+
+    function renderCleanerConversations(item) {
+      const sameDayIds = Array.isArray(item.same_day_conversation_ids)
+        ? item.same_day_conversation_ids
+        : [];
+
+      const dayBeforeIds = Array.isArray(item.day_before_conversation_ids)
+        ? item.day_before_conversation_ids
+        : [];
+
+      let html = "";
+
+      html += '<div class="details-conversations">';
+      html += '<div class="details-section-title">Cleaner Conversation IDs</div>';
+
+      html += '<div class="conversation-grid">';
+
+      html += '<div class="conversation-day-box">';
+      html += '<div class="conversation-day-title">Same Day</div>';
+      html += renderConversationPills(sameDayIds);
+      html += '</div>';
+
+      html += '<div class="conversation-day-box">';
+      html += '<div class="conversation-day-title">Day Before</div>';
+      html += renderConversationPills(dayBeforeIds);
+      html += '</div>';
+
+      html += '</div>';
+      html += '</div>';
+
+      return html;
+    }
+
+    function openMoreDetails(caseId) {
+      const item = getCaseById(caseId);
+      if (!item) return;
+
+      document.getElementById("modalTitle").textContent =
+        (item.ptc_order_id || item.case_id || "") + " — Analysis";
+
+      let html = "";
+
+      html += renderCleanerConversations(item);
+
+      html += '<div class="analysis-grid">';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Classification</h4>';
+      html += '<p><strong>Category:</strong> ' + escapeHtml(normalizeCategory(item.final_category)) + '</p>';
+      html += '<p><strong>Confidence:</strong> ' + escapeHtml(item.confidence || "—") + '</p>';
+      html += '<p><strong>Responsibility:</strong> ' + escapeHtml(item.responsibility || "—") + '</p>';
+      html += '<p><strong>Included in losses:</strong> ' + (includeInWeelsLosses(item) ? "Yes" : "No") + '</p>';
+      html += '</div>';
+
+      const finalReason = String(item.final_reason || "").trim();
+      const summary = String(item.main_root_cause_summary || "").trim();
+
+      if (finalReason && finalReason !== summary) {
+        html += '<div class="analysis-box wide-box">';
+        html += '<h4>Final Reason</h4>';
+        html += '<p>' + escapeHtml(finalReason) + '</p>';
+        html += '</div>';
+      }
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Evidence Summary</h4>';
+      html += renderList(item.evidence_summary);
+      html += '</div>';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Contradictions / Uncertainties</h4>';
+      html += renderList(item.contradictions_or_uncertainties);
+      html += '</div>';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Missing / Unclear Information</h4>';
+      html += renderList(item.missing_or_unclear_information);
+      html += '</div>';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Secondary Issues</h4>';
+      html += renderList(item.secondary_issues);
+      html += '</div>';
+
+      html += '</div>';
+
+      document.getElementById("modalBody").innerHTML = html;
+      document.getElementById("detailsModal").style.display = "block";
+    }
+
+    function closeMoreDetails() {
+      document.getElementById("detailsModal").style.display = "none";
+    }
+
+    function downloadJson() {
+      saveState();
+
+      const payload = {
+        reportCases: reportCases,
+        reportMetrics: reportMetrics,
+        exportedAt: new Date().toISOString()
+      };
+
+      downloadTextFile(
+        "failed-weels-edited-report-data-" + REPORT_ID + ".json",
+        JSON.stringify(payload, null, 2),
+        "application/json"
+      );
+    }
+
+    function downloadEditedHtml() {
+      saveState();
+
+      const currentHtml = document.documentElement.outerHTML;
+      const parser = new DOMParser();
+      const doc = parser.parseFromString("<!DOCTYPE html>" + currentHtml, "text/html");
+
+      const casesScript = doc.getElementById("initial-cases-json");
+      const metricsScript = doc.getElementById("initial-metrics-json");
+
+      if (casesScript) {
+        casesScript.textContent = JSON.stringify(reportCases)
+          .replace(/</g, "\\u003c")
+          .replace(/>/g, "\\u003e")
+          .replace(/&/g, "\\u0026");
+      }
+
+      if (metricsScript) {
+        metricsScript.textContent = JSON.stringify(reportMetrics)
+          .replace(/</g, "\\u003c")
+          .replace(/>/g, "\\u003e")
+          .replace(/&/g, "\\u0026");
+      }
+
+      const finalHtml = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+
+      downloadTextFile(
+        "unplanned-weels-edited-report-saved-" + REPORT_ID + ".html",
+        finalHtml,
+        "text/html"
+      );
+    }
+
+    function downloadTextFile(filename, content, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById("detailsModal");
+      if (event.target === modal) {
+        closeMoreDetails();
+      }
+    };
+
+    document.querySelectorAll(".category-section").forEach(function(node) {
+      node.remove();
+    });
+
+    loadState();
+    renderReport();
+  </script>
+
+</body></html>
