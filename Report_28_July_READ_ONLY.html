@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Planned vs Actual Weels Analysis Report</title>
+
+  <style>
+    :root {
+      --bg: #eef0f3;
+      --surface: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --border-strong: #d1d5db;
+      --accent: #1d4ed8;
+      --navy: #0f172a;
+      --danger: #b91c1c;
+      --success: #15803d;
+      --warning: #b45309;
+      --purple: #6d28d9;
+      --radius: 12px;
+      --shadow: 0 1px 2px rgba(47, 54, 64, 0.04);
+      --layout-max-width: 1510px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      font-size: 13.5px;
+      zoom: 0.9;
+    }
+
+    header {
+      background: #191d24;
+      color: #ffffff;
+      padding: 11px 32px;
+      border-bottom: 1px solid #1f2937;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      color: #ffffff;
+    }
+
+    header p {
+      display: none;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 14px 32px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--border);
+    }
+
+    button {
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--text);
+      padding: 7px 12px;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12.5px;
+    }
+
+    button:hover {
+      background: #f3f4f6;
+    }
+
+    button.primary {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    button.danger {
+      color: var(--danger);
+      border-color: #fecaca;
+    }
+
+    .container {
+      padding: 24px 32px 40px;
+      max-width: var(--layout-max-width);
+      margin: 0 auto;
+    }
+
+    .kpi-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .kpi {
+      background: var(--surface);
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      min-height: 154px;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #52637a;
+      margin-bottom: 12px;
+    }
+
+    .kpi-value {
+      font-size: 30px;
+      font-weight: 850;
+      color: var(--navy);
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+    }
+
+    .kpi-value.danger {
+      color: var(--danger);
+    }
+
+    .kpi-note {
+      font-size: 12px;
+      color: #4b5f7a;
+      margin-top: 8px;
+    }
+
+    .kpi .transport {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 14px;
+      margin-top: 10px;
+      font-size: 12px;
+      color: #4b5f7a;
+    }
+
+    .kpi .transport span {
+      white-space: nowrap;
+    }
+
+    .kpi .transport strong {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .careem-input {
+      width: 70px;
+      border: none;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 1px 0;
+      margin-left: 4px;
+      text-align: right;
+      background: transparent;
+    }
+
+    .careem-input:focus {
+      outline: none;
+      border-bottom-color: var(--accent);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .card-head .muted {
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .careem-section {
+      padding: 18px;
+    }
+
+    .careem-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+
+    .careem-summary-box {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 14px;
+      background: #f8fafc;
+    }
+
+    .careem-summary-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .careem-summary-value {
+      font-size: 20px;
+      font-weight: 850;
+      color: var(--navy);
+    }
+
+    .careem-table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-top: 12px;
+    }
+
+    .careem-table th,
+    .careem-table td {
+      font-size: 12.5px;
+      vertical-align: top;
+    }
+
+    .careem-reason-input {
+      min-width: 260px;
+      min-height: 72px;
+      resize: vertical;
+      background: #ffffff;
+    }
+
+    .careem-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      background: #eff6ff;
+      color: #1d4ed8;
+      white-space: nowrap;
+    }
+
+    .careem-badge.low {
+      background: #fef2f2;
+      color: #b91c1c;
+    }
+
+    .careem-badge.medium {
+      background: #fffbeb;
+      color: #b45309;
+    }
+
+    .careem-badge.high {
+      background: #f0fdf4;
+      color: #15803d;
+    }
+
+    .careem-actions {
+      margin-top: 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #ffffff;
+      padding: 12px 14px;
+    }
+
+    .careem-actions h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      font-weight: 850;
+      color: var(--navy);
+    }
+
+    .lossbar-wrap {
+      padding: 18px;
+    }
+
+    .lossbar {
+      display: flex;
+      height: 16px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e5e7eb;
+    }
+
+    .lossbar-seg {
+      height: 100%;
+      min-width: 2px;
+    }
+
+    .lossbar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px 20px;
+      margin-top: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12.5px;
+    }
+
+    .legend-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .legend-name {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .legend-val {
+      color: var(--muted);
+    }
+
+    .content-layout {
+      display: grid;
+      grid-template-columns: 3fr 7fr;
+      gap: 24px;
+      margin-top: 22px;
+    }
+
+    .filter-nav {
+      width: auto;
+      position: sticky;
+      top: 20px;
+      align-self: flex-start;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .filter-nav-title {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .filter-field {
+      margin-bottom: 12px;
+    }
+
+    .filter-field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 10px;
+      font-family: inherit;
+      font-size: 13px;
+      background: white;
+      color: var(--text);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+    }
+
+    textarea {
+      resize: vertical;
+      line-height: 1.45;
+    }
+
+    .pill-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .pill {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      width: 100%;
+      text-align: left;
+      transition: background 0.12s;
+    }
+
+    .pill:hover {
+      background: #f3f4f6;
+    }
+
+    .pill.active {
+      background: #eff6ff;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .nav-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .cat-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .pill-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .case-count {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 0 7px;
+      line-height: 18px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.07);
+      color: inherit;
+      flex-shrink: 0;
+    }
+
+    .loss-amt {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 0 7px;
+      line-height: 18px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.07);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .loss-amt.loss-red {
+      color: var(--danger);
+    }
+
+    .loss-amt.loss-grey {
+      color: var(--muted);
+    }
+
+    .cases-section {
+      width: auto;
+      min-width: 0;
+    }
+
+    .case-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      padding: 18px;
+    }
+
+    .category-section {
+      margin-bottom: 24px;
+    }
+
+    .category-header {
+      margin-bottom: 12px;
+    }
+
+    .category-header h2 {
+      margin: 0 0 6px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .category-summary {
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    .case-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .case-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      border-top: 3px solid var(--navy);
+      padding: 14px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .cc-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .cc-id {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .cc-id strong {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    .cc-cost {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--danger);
+      white-space: nowrap;
+    }
+
+    .cc-cost.zero {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .cc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 16px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .cc-meta b {
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .cc-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .cc-field textarea {
+      width: 100%;
+      min-height: 0;
+      height: auto;
+      overflow: hidden;
+      resize: none;
+      field-sizing: content;
+      font-size: 12.5px;
+      line-height: 1.5;
+      background: #f3f4f6;
+      border-color: var(--border);
+    }
+
+    .cc-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding-top: 8px;
+      border-top: 1px solid var(--border);
+      margin-top: 2px;
+    }
+
+    .cc-cat {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .cc-cat select {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 12px;
+      width: auto;
+      cursor: pointer;
+    }
+
+    .btn-link {
+      border: none;
+      background: none;
+      color: var(--accent);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 0;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-link:hover {
+      text-decoration: underline;
+      background: transparent;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .badge.loss {
+      color: var(--danger);
+      background: #fef2f2;
+    }
+
+    .badge.no-loss {
+      color: var(--success);
+      background: #f0fdf4;
+    }
+
+    .badge.review {
+      color: var(--warning);
+      background: #fffbeb;
+      margin-left: 6px;
+    }
+
+    .badge.category {
+      color: #1d4ed8;
+      background: #dbeafe;
+    }
+
+    .badge.branch {
+      color: #5b21b6;
+      background: #ede9fe;
+    }
+
+    .empty-state {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      grid-column: 1 / -1;
+    }
+
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(16, 24, 40, 0.68);
+      z-index: 100;
+      padding: 28px;
+      overflow: auto;
+    }
+
+    .modal {
+      background: white;
+      max-width: 1078px;
+      margin: 0 auto;
+      border-radius: 18px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.25);
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 18px 21px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: center;
+      background: #fbfdff;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      font-size: 19px;
+      font-weight: 900;
+    }
+
+    .modal-body {
+      padding: 18px;
+      max-height: 76vh;
+      overflow: auto;
+    }
+
+    .analysis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .analysis-box {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      background: #ffffff;
+    }
+
+    .analysis-box h4 {
+      margin: 0 0 9px;
+      font-size: 15px;
+      font-weight: 900;
+      color: #101828;
+      border-bottom: 1px solid #eef2f7;
+      padding-bottom: 7px;
+    }
+
+    .analysis-box p,
+    .analysis-box li {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .wide-box {
+      grid-column: 1 / -1;
+    }
+
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 12px;
+      max-height: 360px;
+      overflow: auto;
+    }
+
+    ul {
+      padding-left: 20px;
+      margin-top: 6px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #eef2f7;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #475467;
+      background: #f8fafc;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .conversation-id-pill {
+      display: inline-flex;
+      align-items: center;
+      background: #f9fafb;
+      border: 1px solid #d0d5dd;
+      color: #344054;
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 11px;
+      font-weight: 800;
+      margin: 4px 5px 4px 0;
+      word-break: break-all;
+    }
+
+    @media (max-width: 960px) {
+      .content-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-nav,
+      .cases-section {
+        width: 100%;
+      }
+
+      .filter-nav {
+        position: static;
+      }
+
+      .pill-group {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+
+      .pill {
+        width: auto;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        background: white;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .kpi-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .careem-summary-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .kpi-bar {
+        grid-template-columns: 1fr;
+      }
+
+      header {
+        padding: 12px 18px;
+      }
+
+      .toolbar,
+      .container {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+    }
+  </style>
+
+    <style id="readonly-report-style">
+      input, select, textarea {
+        pointer-events: none !important;
+        background: #f9fafb !important;
+        color: #374151 !important;
+      }
+
+      .toolbar {
+        display: none !important;
+      }
+
+      .readonly-banner {
+        max-width: 1510px;
+        margin: 16px auto 0;
+        padding: 10px 14px;
+        border-radius: 10px;
+        background: #f3f4f6;
+        color: #374151;
+        font-size: 13px;
+        border: 1px solid #e5e7eb;
+      }
+    </style>
+  </head>
+
+<body>
+  <header>
+    <h1>Planned vs Actual Weels Analysis Report - 2026-07-28</h1>
+    <p>Generated at 2026-07-29T13:27:49.810Z</p>
+  </header>
+    <div class="readonly-banner">
+      Published read-only report
+    </div>
+  
+
+  
+
+  <div class="container">
+    <div class="kpi-bar">
+      <div class="kpi">
+        <div class="kpi-label">Cost / Booking Hour</div>
+        <div class="kpi-value" id="costPerHour">0 AED/hr</div>
+        <div class="kpi-note" id="costPerHourFormula">0 AED ÷ 0 booking hrs</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-label">Total Cases</div>
+        <div class="kpi-value" id="totalCases">0</div>
+        <div class="kpi-note">Failed Weels cases</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-label">Failed Weels Losses</div>
+        <div class="kpi-value danger" id="failedWeelCost">0 AED</div>
+        <div class="kpi-note" id="lossesNote">0 cases counted</div>
+      </div>
+
+      <div class="kpi">
+        <div class="kpi-label">Total Transportation</div>
+        <div class="kpi-value" id="totalTranspoCost">0 AED</div>
+        <div class="transport">
+          <span>
+            Careem
+            <input disabled id="careemCostInput" class="careem-input" type="number" step="0.01" min="0" value="0" />
+            AED
+          </span>
+          <span>Weels <strong id="weelCost">0</strong></span>
+          <span>PT <strong id="ptCost">0</strong></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="careemAnalysisCard">
+      <div class="card-head">
+        <h2>Careem Cost Analysis</h2>
+        <span class="muted" id="careemAnalysisNote">Careem rows matched against final Weels categorization</span>
+      </div>
+      <div class="careem-section" id="careemAnalysisSection"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Losses by Category</h2>
+        <span class="muted" id="lossBarTotal"></span>
+      </div>
+      <div class="lossbar-wrap">
+        <div class="lossbar" id="lossBar"></div>
+        <div class="lossbar-legend" id="lossLegend"></div>
+      </div>
+    </div>
+
+    <div class="content-layout">
+      <aside class="filter-nav">
+        <div class="filter-nav-title">Filters</div>
+
+        <div class="filter-field">
+          <label for="searchInput">Search</label>
+          <input disabled id="searchInput" placeholder="Cases, maids, reasons..." />
+        </div>
+
+        <nav class="pill-group" id="categoryList"></nav>
+      </aside>
+
+      <main class="cases-section">
+        <div class="card">
+          <div class="card-head">
+            <h2>Cases</h2>
+            <span class="muted" id="tableCount"></span>
+          </div>
+          <div id="reportContent" class="case-grid"></div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="detailsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modalTitle">More Details</h2>
+        <button onclick="closeMoreDetails()">Close</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script id="initial-cases-json" type="application/json">[]</script>
+  <script id="initial-metrics-json" type="application/json">{"working_hours":436.5,"number_of_cleaners":42,"pt_cost":544.94,"careem_cost":69.89,"total_weel_cost":3463.33,"total_losses":0,"total_cases":0,"included_loss_cases":0,"excluded_loss_cases":0,"failed_recovery_cases":0,"pure_unplanned_cases":0,"total_unplanned_cases":0,"failed_weels_orders_count":0,"parse_error_count":0,"manual_review_count":0,"total_transpo_cost":4078.16,"transpo_cost_per_hour":9.342863688430699}</script>
+  <script id="initial-category-summary-json" type="application/json">[]</script>
+  <script id="initial-loss-scope-summary-json" type="application/json">[]</script>
+  <script id="initial-careem-analysis-json" type="application/json">{"careem_cases":[{"maid_name":"MELODY VERGARA ALIM","careem_datetime_dubai":"2026-07-08 14:55:32.000","careem_cost":69.89,"matched_failed_weels_order_id":null,"matched_failed_category":null,"careem_reason_category":"No matching failed Weels found","reason_summary":"Careem cost was AED 69.89 at 2026-07-08 14:55:32.000 for MELODY VERGARA ALIM. This Careem row did not match any final categorized Weels case by normalized maid name and the configured timing window of 30 minutes before to 180 minutes after the Weels requested pickup time. Because there is no matched final Weels category, final_reason, or detailed_root_cause_explanation available, the Careem ride cannot be linked to a failed Weels case. It may have been booked for another operational reason, but the current data does not prove why it was booked.","confidence":"Low","needs_manual_review":true,"manual_review_reason":"No matching final categorized Weels case was found. Careem data also lacks pickup location, dropoff location, booking ID, client details, driver details, and exact booking reason, so the reason can only be reviewed manually."}],"careem_cost_summary":{"total_careem_cost":69.89,"total_careem_orders":1,"cost_by_reason_category":[{"careem_reason_category":"No matching failed Weels found","orders_count":1,"total_cost":69.89}],"main_reason_summary":"There was 1 Careem order totaling AED 69.89. It did not match any final categorized Weels case by maid name and timing, so it cannot be attributed to a failed Weels replacement based on the available evidence.","avoidable_cost_commentary":"Avoidability cannot be determined from the current evidence. Since no matched failed Weels case exists and the Careem data does not include route, booking reason, or operational context, this AED 69.89 should not be treated as confirmed Weels-replacement loss without manual validation."},"recommended_actions":["Manually review the Careem booking for MELODY VERGARA ALIM at 2026-07-08 14:55:32.000 to confirm the actual reason for booking.","Add Careem pickup location, dropoff location, booking ID, and booking reason to future reports to support evidence-based classification.","Reconcile the Careem cost source with daily report metrics, because the Careem case total is AED 69.89 while the daily_report_metrics careem_cost field shows 0.","Do not classify this Careem order as a Weels replacement unless additional evidence links it to a failed or changed Weels transport case."],"parse_error":false,"parse_error_message":null,"debug":{"careem_analysis_parsed":true,"careem_input_cases_count":1,"careem_output_cases_count":1,"original_report_preserved":true,"original_report_cases_count":0}}</script>
+
+  <script>
+    const REPORT_ID = "2026-07-28-2026-07-29T13-27-49-810Z";
+    const STORAGE_KEY = "planned_vs_actual_weels_editable_report_state_" + REPORT_ID;
+
+    const initialCases = JSON.parse(document.getElementById("initial-cases-json").textContent || "[]");
+    const initialMetrics = JSON.parse(document.getElementById("initial-metrics-json").textContent || "{}");
+    const initialCareemAnalysis = JSON.parse(document.getElementById("initial-careem-analysis-json").textContent || "{}");
+
+    let reportCases = [];
+    let reportMetrics = {};
+    let careemAnalysis = {};
+    let selectedCategory = "ALL";
+
+    const allowedCategories = [
+      "Operation mistake",
+      "Weels issue",
+      "Maid faults",
+      "Maid left by herself",
+      "Duty extended",
+      "Duplicate Weels order",
+      "Instant Booking / Late Booking",
+      "Booking cancelled",
+      "Unknown",
+      "Excluded"
+    ];
+
+    const categoryColors = {
+      "Operation mistake": "#dc2626",
+      "Maid faults": "#ea580c",
+      "Maid left by herself": "#f1f5f9",
+      "Weels issue": "#475569",
+      "Duty extended": "#64748b",
+      "Duplicate Weels order": "#be185d",
+      "Instant Booking / Late Booking": "#0891b2",
+      "Booking cancelled": "#e2e8f0",
+      "Unknown": "#94a3b8",
+      "Excluded": "#cbd5e1"
+    };
+
+    function deepClone(value) {
+      return JSON.parse(JSON.stringify(value));
+    }
+
+    function norm(value) {
+      return String(value || "").toLowerCase().replace(/\s+/g, " ").trim();
+    }
+
+    function loadState() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          reportCases = Array.isArray(parsed.reportCases) ? parsed.reportCases : deepClone(initialCases);
+          reportMetrics = parsed.reportMetrics || deepClone(initialMetrics);
+          careemAnalysis = parsed.careemAnalysis || deepClone(initialCareemAnalysis);
+
+          if ((!reportCases || reportCases.length === 0) && initialCases.length > 0) {
+            reportCases = deepClone(initialCases);
+            reportMetrics = deepClone(initialMetrics);
+            careemAnalysis = deepClone(initialCareemAnalysis);
+          }
+        } catch (error) {
+          reportCases = deepClone(initialCases);
+          reportMetrics = deepClone(initialMetrics);
+          careemAnalysis = deepClone(initialCareemAnalysis);
+        }
+      } else {
+        reportCases = deepClone(initialCases);
+        reportMetrics = deepClone(initialMetrics);
+        careemAnalysis = deepClone(initialCareemAnalysis);
+      }
+
+      if (!reportMetrics) reportMetrics = {};
+      if (!careemAnalysis) careemAnalysis = {};
+      if (reportMetrics.careem_cost === undefined) reportMetrics.careem_cost = 0;
+
+      const careemInput = document.getElementById("careemCostInput");
+      if (careemInput) careemInput.value = Number(reportMetrics.careem_cost || 0);
+    }
+
+    function saveState() { return; }
+
+    function resetChanges() { return; }
+
+    function formatMoney(value) {
+      const n = Number(value || 0);
+      return n.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      }) + " AED";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replace(/\n/g, " ");
+    }
+
+    function normalizeCategory(category) {
+      const raw = String(category || "").trim();
+      const lower = norm(raw);
+
+      const allowed = [
+        "Operation mistake",
+        "Weels issue",
+        "Maid faults",
+        "Maid left by herself",
+        "Duty extended",
+        "Duplicate Weels order",
+        "Instant Booking / Late Booking",
+        "Booking cancelled",
+        "Unknown",
+        "Excluded"
+      ];
+
+      const exact = allowed.find(c => norm(c) === lower);
+      if (exact) return exact;
+
+      if (!raw || lower.includes("unknown / instant")) return "Unknown";
+
+      if (
+        lower.includes("replacement after failed") ||
+        lower.includes("failed weels replacement") ||
+        lower.includes("recovery after failed") ||
+        lower.includes("valid replacement") ||
+        lower.includes("replacement recovery")
+      ) {
+        return "Unknown";
+      }
+
+      if (
+        lower.includes("replacement") ||
+        lower.includes("same-day operational change") ||
+        lower.includes("same day operational change") ||
+        lower.includes("cleaner swap") ||
+        lower.includes("client change") ||
+        lower.includes("booking change")
+      ) {
+        if (
+          lower.includes("mistake") ||
+          lower.includes("wrong") ||
+          lower.includes("mishandled") ||
+          lower.includes("avoidable") ||
+          lower.includes("not cancelled") ||
+          lower.includes("not canceled") ||
+          lower.includes("bad coordination")
+        ) {
+          return "Operation mistake";
+        }
+
+        return "Instant Booking / Late Booking";
+      }
+
+      if (
+        lower.includes("maid requested") ||
+        lower.includes("maid request") ||
+        lower.includes("requested taxi") ||
+        lower.includes("requested weels") ||
+        lower.includes("maid refused") ||
+        lower.includes("refused pt") ||
+        lower.includes("refused public") ||
+        lower.includes("refused planned") ||
+        lower.includes("refused transport") ||
+        lower.includes("refused walking") ||
+        lower.includes("refused bus") ||
+        lower.includes("refused metro") ||
+        lower.includes("did not follow planned transport")
+      ) {
+        return "Maid faults";
+      }
+
+      if (
+        lower.includes("valid last") ||
+        lower.includes("last-minute") ||
+        lower.includes("last minute") ||
+        lower.includes("urgent") ||
+        lower.includes("justified late") ||
+        lower.includes("instant") ||
+        lower.includes("manual booking") ||
+        lower.includes("same-day booking") ||
+        lower.includes("same day booking") ||
+        lower.includes("late booking")
+      ) {
+        return "Instant Booking / Late Booking";
+      }
+
+      if (
+        lower.includes("weels/provider") ||
+        lower.includes("provider issue") ||
+        lower.includes("driver issue") ||
+        lower.includes("weels issue") ||
+        lower.includes("provider") ||
+        lower.includes("driver")
+      ) {
+        return "Weels issue";
+      }
+
+      if (
+        lower.includes("duplicate") ||
+        lower.includes("duplicated") ||
+        lower.includes("booked twice") ||
+        lower.includes("double order") ||
+        lower.includes("two orders")
+      ) {
+        return "Duplicate Weels order";
+      }
+
+      if (
+        lower.includes("operation") ||
+        lower.includes("ops") ||
+        lower.includes("wrong") ||
+        lower.includes("mistake") ||
+        lower.includes("no valid booking") ||
+        lower.includes("planned pt") ||
+        lower.includes("wrong segment") ||
+        lower.includes("unjustified")
+      ) {
+        return "Operation mistake";
+      }
+
+      if (
+        lower.includes("maid left") ||
+        lower.includes("already left") ||
+        lower.includes("self transport") ||
+        lower.includes("carlift") ||
+        lower.includes("left by herself") ||
+        lower.includes("left herself") ||
+        lower.includes("already arrived")
+      ) {
+        return "Maid left by herself";
+      }
+
+      if (
+        lower.includes("maid fault") ||
+        lower.includes("refused") ||
+        lower.includes("unresponsive") ||
+        lower.includes("sick") ||
+        lower.includes("not ready") ||
+        lower.includes("phone off")
+      ) {
+        return "Maid faults";
+      }
+
+      if (
+        lower.includes("duty") ||
+        lower.includes("extended") ||
+        lower.includes("still working") ||
+        lower.includes("finished late") ||
+        lower.includes("client kept")
+      ) {
+        return "Duty extended";
+      }
+
+      if (lower.includes("weels")) return "Weels issue";
+      if (lower.includes("cancel")) return "Booking cancelled";
+      if (lower.includes("exclude")) return "Excluded";
+
+      return "Unknown";
+    }
+
+    function defaultIncludeInLossesByCategory(category) {
+      const c = normalizeCategory(category);
+
+      if (c === "Operation mistake") return true;
+      if (c === "Weels issue") return true;
+      if (c === "Maid faults") return true;
+      if (c === "Duty extended") return true;
+      if (c === "Duplicate Weels order") return true;
+
+      if (c === "Instant Booking / Late Booking") return false;
+      if (c === "Booking cancelled") return false;
+      if (c === "Maid left by herself") return false;
+      if (c === "Unknown") return false;
+      if (c === "Excluded") return false;
+
+      return false;
+    }
+
+    function getCaseById(caseId) {
+      return reportCases.find(function(item) {
+        return String(item.case_id) === String(caseId);
+      });
+    }
+
+    function getScopeLabel(item) {
+      const scope = item.loss_scope || "";
+      const path = item.analysis_path || "";
+
+      if (scope === "planned_failed_weels") return "Planned failed Weels";
+      if (scope === "planned_failed_weels_with_replacement") return "Planned failed Weels with replacement context";
+      if (scope === "planned_failed_weels_without_replacement") return "Planned failed Weels without replacement";
+      if (scope === "replacement_context_only") return "Replacement context only";
+      if (scope === "loss_included_but_no_cost_found") return "Loss included but no cost found";
+      if (scope === "actual_problematic_weels_order") return "Actual problematic Weels order";
+      if (scope === "failed_parent_detected_by_replacement") return "Failed parent detected by replacement";
+      if (scope === "possible_duplicate_weels_order") return "Possible duplicate Weels";
+      if (scope === "unplanned_ai_reason") return "Unplanned / mismatch Weels";
+      if (scope === "replacement_after_failed_weels") return "Replacement context only";
+
+      if (path === "failed_replacement_duplicate_path") return "Failed / duplicate branch";
+      if (path === "unplanned_weels_path") return "Unplanned / mismatch branch";
+
+      return scope || path || "Unknown scope";
+    }
+
+    function updateCareemCost() { return; }
+
+    function calculateMetrics() {
+      const totalCases = reportCases.length;
+
+      const weelCost = Number(
+        reportMetrics.total_weel_cost ||
+        reportMetrics.total_weels_cost ||
+        reportMetrics.weel_cost ||
+        0
+      );
+
+      const ptCost = Number(reportMetrics.pt_cost || 0);
+      const careemCost = Number(reportMetrics.careem_cost || 0);
+
+      const workingHours = Number(
+        reportMetrics.working_hours ||
+        reportMetrics.total_working_hours ||
+        0
+      );
+
+      const totalLosses = reportCases.reduce(function(sum, item) {
+        if (item.include_in_losses !== true) return sum;
+        return sum + Number(item.loss_amount_aed || item.loss_amount || 0);
+      }, 0);
+
+      const includedLossCases = reportCases.filter(function(item) {
+        return item.include_in_losses === true;
+      }).length;
+
+      const totalTranspoCost = weelCost + ptCost + careemCost;
+      const costPerHour = workingHours > 0 ? totalTranspoCost / workingHours : 0;
+
+      reportMetrics.total_cases = totalCases;
+      reportMetrics.total_losses = totalLosses;
+      reportMetrics.included_loss_cases = includedLossCases;
+      reportMetrics.total_transpo_cost = totalTranspoCost;
+      reportMetrics.transpo_cost_per_hour = costPerHour;
+
+      const costPerHourEl = document.getElementById("costPerHour");
+      const costPerHourFormulaEl = document.getElementById("costPerHourFormula");
+      const totalCasesEl = document.getElementById("totalCases");
+      const failedWeelCostEl = document.getElementById("failedWeelCost");
+      const lossesNoteEl = document.getElementById("lossesNote");
+      const totalTranspoCostEl = document.getElementById("totalTranspoCost");
+      const weelCostEl = document.getElementById("weelCost");
+      const ptCostEl = document.getElementById("ptCost");
+      const careemInput = document.getElementById("careemCostInput");
+
+      if (costPerHourEl) {
+        costPerHourEl.textContent = costPerHour.toFixed(2) + " AED/hr";
+      }
+
+      if (costPerHourFormulaEl) {
+        costPerHourFormulaEl.textContent =
+          formatMoney(totalTranspoCost).replace(" AED", "") +
+          " AED ÷ " +
+          workingHours.toFixed(2) +
+          " booking hrs";
+      }
+
+      if (totalCasesEl) {
+        totalCasesEl.textContent = totalCases;
+      }
+
+      if (failedWeelCostEl) {
+        failedWeelCostEl.textContent = formatMoney(totalLosses);
+      }
+
+      if (lossesNoteEl) {
+        lossesNoteEl.textContent = includedLossCases + " cases counted";
+      }
+
+      if (totalTranspoCostEl) {
+        totalTranspoCostEl.textContent = formatMoney(totalTranspoCost);
+      }
+
+      if (weelCostEl) {
+        weelCostEl.textContent = formatMoney(weelCost).replace(" AED", "");
+      }
+
+      if (ptCostEl) {
+        ptCostEl.textContent = formatMoney(ptCost).replace(" AED", "");
+      }
+
+      if (careemInput && document.activeElement !== careemInput) {
+        careemInput.value = careemCost;
+      }
+
+      renderLossBar();
+    }
+
+    function renderCareemAnalysis() {
+      const section = document.getElementById("careemAnalysisSection");
+      const card = document.getElementById("careemAnalysisCard");
+
+      if (!section || !card) return;
+
+      const careemCases = Array.isArray(careemAnalysis.careem_cases)
+        ? careemAnalysis.careem_cases
+        : [];
+
+      const summary = careemAnalysis.careem_cost_summary || {};
+
+      if (!careemCases.length && !summary.total_careem_cost) {
+        section.innerHTML = "<p class='muted'>No Careem analysis available for this report.</p>";
+        return;
+      }
+
+      const totalCost = Number(summary.total_careem_cost || reportMetrics.careem_cost || 0);
+      const totalOrders = Number(summary.total_careem_orders || careemCases.length || 0);
+
+      let html = "";
+
+      html += '<div class="careem-summary-grid">';
+
+      html += '<div class="careem-summary-box">';
+      html += '<div class="careem-summary-label">Total Careem Cost</div>';
+      html += '<div class="careem-summary-value">' + formatMoney(totalCost) + '</div>';
+      html += '</div>';
+
+      html += '<div class="careem-summary-box">';
+      html += '<div class="careem-summary-label">Careem Orders</div>';
+      html += '<div class="careem-summary-value">' + totalOrders + '</div>';
+      html += '</div>';
+
+      html += '<div class="careem-summary-box">';
+      html += '<div class="careem-summary-label">Main Reason</div>';
+      html += '<div style="font-size:12.5px;color:#475467;">' + escapeHtml(summary.main_reason_summary || "No main reason summary available.") + '</div>';
+      html += '</div>';
+
+      html += '</div>';
+
+      if (summary.avoidable_cost_commentary) {
+        html += '<div class="careem-actions">';
+        html += '<h3>Avoidable Cost Commentary</h3>';
+        html += '<p>' + escapeHtml(summary.avoidable_cost_commentary) + '</p>';
+        html += '</div>';
+      }
+
+      const costByCategory = Array.isArray(summary.cost_by_reason_category)
+        ? summary.cost_by_reason_category
+        : [];
+
+      if (costByCategory.length) {
+        html += '<div class="careem-actions">';
+        html += '<h3>Cost by Careem Reason Category</h3>';
+        html += '<table class="careem-table">';
+        html += '<thead><tr><th>Reason Category</th><th>Orders</th><th>Total Cost</th></tr></thead>';
+        html += '<tbody>';
+
+        html += costByCategory.map(function(row) {
+          return ''
+            + '<tr>'
+            + '<td>' + escapeHtml(row.careem_reason_category || "") + '</td>'
+            + '<td>' + Number(row.orders_count || 0) + '</td>'
+            + '<td><strong>' + formatMoney(row.total_cost || 0) + '</strong></td>'
+            + '</tr>';
+        }).join("");
+
+        html += '</tbody></table>';
+        html += '</div>';
+      }
+
+      html += '<div class="careem-table-wrap">';
+      html += '<table class="careem-table">';
+      html += '<thead><tr>';
+      html += '<th>Maid</th>';
+      html += '<th>Datetime</th>';
+      html += '<th>Cost</th>';
+      html += '<th>Matched Weels</th>';
+      html += '<th>Reason Category</th>';
+      html += '<th>Reason Summary</th>';
+      html += '<th>Confidence</th>';
+      html += '</tr></thead>';
+      html += '<tbody>';
+
+      html += careemCases.map(function(item, index) {
+        const confidenceClass = String(item.confidence || "").toLowerCase();
+
+        return ''
+          + '<tr>'
+          + '<td>' + escapeHtml(item.maid_name || "") + '</td>'
+          + '<td>' + escapeHtml(item.careem_datetime_dubai || "") + '</td>'
+          + '<td><strong>' + formatMoney(item.careem_cost || 0) + '</strong></td>'
+          + '<td>'
+          + '<div>' + escapeHtml(item.matched_failed_weels_order_id || "No match") + '</div>'
+          + '<div style="color:#6b7280;font-size:11px;">' + escapeHtml(item.matched_failed_category || "") + '</div>'
+          + '</td>'
+          + '<td>'
+          + '<select disabled>'
+          + getCareemReasonOptions(item.careem_reason_category)
+          + '</select>'
+          + '</td>'
+          + '<td>'
+          + '<textarea disabled class="careem-reason-input">'
+          + escapeHtml(item.reason_summary || "")
+          + '</textarea>'
+          + '</td>'
+          + '<td><span class="careem-badge ' + escapeAttr(confidenceClass) + '">' + escapeHtml(item.confidence || "") + '</span></td>'
+          + '</tr>';
+      }).join("");
+
+      html += '</tbody></table>';
+      html += '</div>';
+
+      const actions = Array.isArray(careemAnalysis.recommended_actions)
+        ? careemAnalysis.recommended_actions
+        : [];
+
+      if (actions.length) {
+        html += '<div class="careem-actions">';
+        html += '<h3>Recommended Actions</h3>';
+        html += '<ul>' + actions.map(function(action) {
+          return '<li>' + escapeHtml(action) + '</li>';
+        }).join("") + '</ul>';
+        html += '</div>';
+      }
+
+      section.innerHTML = html;
+    }
+
+    function getCareemReasonOptions(currentValue) {
+      const options = [
+        "Weels replacement - Weels issue",
+        "Weels replacement - Operation mistake",
+        "Weels replacement - Maid fault",
+        "Weels replacement - Maid left by herself",
+        "Booking changed / duty extended",
+        "Instant booking / urgent booking",
+        "No matching failed Weels found",
+        "Unknown"
+      ];
+
+      const current = String(currentValue || "").trim();
+
+      if (current && !options.includes(current)) {
+        options.push(current);
+      }
+
+      return options.map(function(option) {
+        return '<option value="' + escapeAttr(option) + '" ' + (option === current ? "selected" : "") + '>' + escapeHtml(option) + '</option>';
+      }).join("");
+    }
+
+    function updateCareemCaseField() { return; }
+
+    function rebuildCareemSummaryFromCases() {
+      const careemCases = Array.isArray(careemAnalysis.careem_cases)
+        ? careemAnalysis.careem_cases
+        : [];
+
+      const grouped = {};
+
+      careemCases.forEach(function(item) {
+        const category = item.careem_reason_category || "Unknown";
+        const cost = Number(item.careem_cost || 0);
+
+        if (!grouped[category]) {
+          grouped[category] = {
+            careem_reason_category: category,
+            orders_count: 0,
+            total_cost: 0
+          };
+        }
+
+        grouped[category].orders_count += 1;
+        grouped[category].total_cost += cost;
+      });
+
+      if (!careemAnalysis.careem_cost_summary) {
+        careemAnalysis.careem_cost_summary = {};
+      }
+
+      careemAnalysis.careem_cost_summary.total_careem_cost = careemCases.reduce(function(sum, item) {
+        return sum + Number(item.careem_cost || 0);
+      }, 0);
+
+      careemAnalysis.careem_cost_summary.total_careem_orders = careemCases.length;
+
+      careemAnalysis.careem_cost_summary.cost_by_reason_category = Object.values(grouped).map(function(row) {
+        return {
+          careem_reason_category: row.careem_reason_category,
+          orders_count: row.orders_count,
+          total_cost: Number(row.total_cost.toFixed(2))
+        };
+      });
+
+      reportMetrics.careem_cost = Number(careemAnalysis.careem_cost_summary.total_careem_cost || 0);
+    }
+
+    function getFilteredCases() {
+      const searchInput = document.getElementById("searchInput");
+      const search = String(searchInput ? searchInput.value || "" : "").toLowerCase().trim();
+
+      return reportCases.filter(function(item) {
+        const category = normalizeCategory(item.final_category);
+
+        if (selectedCategory !== "ALL" && category !== selectedCategory) return false;
+
+        if (!search) return true;
+
+        const haystack = [
+          item.ptc_order_id,
+          item.shipday_order_id,
+          item.weels_order_id,
+          item.maid_name,
+          item.requested_pickup_time,
+          item.weels_reason,
+          item.final_category,
+          item.loss_scope,
+          item.analysis_path,
+          item.scope_label,
+          item.loss_reason,
+          item.final_reason,
+          item.main_root_cause_summary,
+          item.detailed_root_cause_explanation,
+          item.evidence_summary_for_report,
+          item.evidence_used_for_report,
+          JSON.stringify(item.waiting_window_analysis || {}),
+          JSON.stringify(item.category_decision_reasoning || {}),
+          Array.isArray(item.cleaner_conversation_ids) ? item.cleaner_conversation_ids.join(" ") : ""
+        ].join(" ").toLowerCase();
+
+        return haystack.includes(search);
+      });
+    }
+
+    function groupCases(casesList) {
+      const grouped = {};
+
+      casesList.forEach(function(item) {
+        const category = normalizeCategory(item.final_category);
+        const tripCost = Number(item.trip_cost || item.weels_trip_cost || 0);
+        const lossCost = item.include_in_losses === true
+          ? Number(item.loss_amount_aed || item.loss_amount || 0)
+          : 0;
+
+        if (!grouped[category]) {
+          grouped[category] = {
+            name: category,
+            cases: [],
+            totalCost: 0,
+            lossCost: 0
+          };
+        }
+
+        grouped[category].cases.push(item);
+        grouped[category].totalCost += tripCost;
+        grouped[category].lossCost += lossCost;
+      });
+
+      return Object.values(grouped).sort(function(a, b) {
+        return b.lossCost - a.lossCost || b.cases.length - a.cases.length || a.name.localeCompare(b.name);
+      });
+    }
+
+    function renderLossBar() {
+      const grouped = groupCases(reportCases).filter(function(group) {
+        return group.lossCost > 0;
+      });
+
+      const totalLoss = grouped.reduce(function(sum, group) {
+        return sum + group.lossCost;
+      }, 0);
+
+      const lossBar = document.getElementById("lossBar");
+      const lossLegend = document.getElementById("lossLegend");
+      const lossBarTotal = document.getElementById("lossBarTotal");
+
+      if (!lossBar || !lossLegend || !lossBarTotal) return;
+
+      lossBarTotal.textContent =
+        formatMoney(totalLoss) +
+        " across " +
+        grouped.length +
+        " categor" +
+        (grouped.length === 1 ? "y" : "ies");
+
+      if (!grouped.length || totalLoss <= 0) {
+        lossBar.innerHTML = "";
+        lossLegend.innerHTML = "<span class='legend-val'>No counted losses.</span>";
+        return;
+      }
+
+      lossBar.innerHTML = grouped.map(function(group) {
+        const pct = totalLoss > 0 ? (group.lossCost / totalLoss) * 100 : 0;
+        const color = categoryColors[group.name] || "#64748b";
+
+        return '<div class="lossbar-seg" title="' + escapeAttr(group.name + " - " + formatMoney(group.lossCost)) + '" style="width:' + pct + '%;background:' + color + ';"></div>';
+      }).join("");
+
+      lossLegend.innerHTML = grouped.map(function(group) {
+        const color = categoryColors[group.name] || "#64748b";
+        const pct = totalLoss > 0 ? Math.round((group.lossCost / totalLoss) * 100) : 0;
+
+        return ''
+          + '<div class="legend-item">'
+          + '<span class="legend-dot" style="background:' + color + ';"></span>'
+          + '<span class="legend-name">' + escapeHtml(group.name) + '</span>'
+          + '<span class="legend-val">' + formatMoney(group.lossCost).replace(" AED", "") + ' AED · ' + pct + '%</span>'
+          + '</div>';
+      }).join("");
+    }
+
+    function renderCategories() {
+      const allGrouped = groupCases(reportCases);
+      const categoryList = document.getElementById("categoryList");
+      const totalCount = reportCases.length;
+
+      const totalLosses = reportCases.reduce(function(sum, item) {
+        if (item.include_in_losses !== true) return sum;
+        return sum + Number(item.loss_amount_aed || item.loss_amount || 0);
+      }, 0);
+
+      let html = "";
+
+      html += '<button class="pill ' + (selectedCategory === "ALL" ? "active" : "") + '" onclick="selectCategory(\'ALL\')">';
+      html += '<span class="nav-label">All</span>';
+      html += '<span class="pill-meta">';
+      html += '<span class="loss-amt ' + (totalLosses > 0 ? "loss-red" : "loss-grey") + '">' + formatMoney(totalLosses).replace(" AED", "") + ' AED</span>';
+      html += '<span class="case-count">' + totalCount + '</span>';
+      html += '</span>';
+      html += '</button>';
+
+      allGrouped.forEach(function(group) {
+        const color = categoryColors[group.name] || "#64748b";
+
+        html += '<button class="pill ' + (selectedCategory === group.name ? "active" : "") + '" onclick="selectCategory(\'' + escapeAttr(group.name) + '\')">';
+        html += '<span class="nav-label"><span class="cat-dot" style="background:' + color + ';"></span>' + escapeHtml(group.name) + '</span>';
+        html += '<span class="pill-meta">';
+        html += '<span class="loss-amt ' + (group.lossCost > 0 ? "loss-red" : "loss-grey") + '">' + formatMoney(group.lossCost).replace(" AED", "") + ' AED</span>';
+        html += '<span class="case-count">' + group.cases.length + '</span>';
+        html += '</span>';
+        html += '</button>';
+      });
+
+      categoryList.innerHTML = html;
+    }
+
+    function selectCategory(category) {
+      selectedCategory = category;
+      renderReport();
+    }
+
+    function renderReport() {
+      reportCases.forEach(function(item) {
+        item.final_category = normalizeCategory(item.final_category);
+        item.scope_label = getScopeLabel(item);
+      });
+
+      calculateMetrics();
+      renderCareemAnalysis();
+      renderCategories();
+
+      const filtered = getFilteredCases();
+      const grouped = groupCases(filtered);
+      const reportContent = document.getElementById("reportContent");
+      const tableCount = document.getElementById("tableCount");
+
+      const visibleLoss = filtered.reduce(function(sum, item) {
+        if (item.include_in_losses !== true) return sum;
+        return sum + Number(item.loss_amount_aed || item.loss_amount || 0);
+      }, 0);
+
+      if (tableCount) {
+        tableCount.textContent = filtered.length + " shown · " + formatMoney(visibleLoss).replace(" AED", "") + " AED loss";
+      }
+
+      if (!grouped.length) {
+        reportContent.innerHTML = '<div class="empty-state">No cases found. Try changing the search or filters.</div>';
+        return;
+      }
+
+      reportContent.innerHTML = grouped.map(renderGroup).join("");
+    }
+
+    function renderGroup(group) {
+      let html = "";
+
+      html += '<section class="category-section">';
+      html += '<div class="category-header">';
+      html += '<h2>' + escapeHtml(group.name) + '</h2>';
+      html += '<div class="category-summary">' + group.cases.length + ' case(s) • Total category cost: ' + formatMoney(group.totalCost) + ' • Losses counted: ' + formatMoney(group.lossCost) + '</div>';
+      html += '</div>';
+
+      html += '<div class="case-list">';
+      html += group.cases.map(renderCaseCard).join("");
+      html += '</div>';
+      html += '</section>';
+
+      return html;
+    }
+
+    function renderCaseCard(item) {
+      const id = String(item.case_id || item.ptc_order_id || item.shipday_order_id || "");
+      const lossAmount = Number(item.loss_amount_aed || item.loss_amount || 0);
+      const isLoss = item.include_in_losses === true;
+      const categoryOptions = getCategoryOptions(item.final_category);
+      const conversationCount = Number(item.cleaner_conversation_count || 0);
+      const category = normalizeCategory(item.final_category);
+      const color = categoryColors[category] || "#64748b";
+
+      let html = "";
+
+      html += '<article class="case-card" style="border-top-color:' + color + ';">';
+
+      html += '<div class="cc-head">';
+      html += '<div class="cc-id">';
+      html += '<strong>' + escapeHtml(item.ptc_order_id || item.case_id || "No PTC") + '</strong>';
+      html += '<span class="badge ' + (isLoss ? "loss" : "no-loss") + '">' + (isLoss ? "Loss" : "No loss") + '</span>';
+
+      if (item.needs_manual_review) {
+        html += '<span class="badge review">Manual review</span>';
+      }
+
+      html += '</div>';
+      html += '<div class="cc-cost ' + (lossAmount > 0 ? "" : "zero") + '">' + formatMoney(lossAmount) + '</div>';
+      html += '</div>';
+
+      html += '<div class="cc-meta">';
+      html += '<span><b>Maid:</b> ' + escapeHtml(item.maid_name || "") + '</span>';
+      html += '<span><b>Pickup:</b> ' + escapeHtml(item.requested_pickup_time || "") + '</span>';
+      html += '<span><b>Conversations:</b> ' + conversationCount + '</span>';
+      html += '</div>';
+
+      html += '<div class="cc-field">';
+      html += '<label>Detailed Root Cause Explanation</label>';
+      html += '<textarea disabled>' + escapeHtml(item.detailed_root_cause_explanation || "") + '</textarea>';
+      html += '</div>';
+
+      html += '<div class="cc-footer">';
+      html += '<div class="cc-cat">';
+      html += '<span class="cat-dot" style="background:' + color + ';"></span>';
+      html += '<select disabled>' + categoryOptions + '</select>';
+      html += '</div>';
+      html += '<button class="btn-link" onclick="openMoreDetails(\'' + escapeAttr(id) + '\')">Full analysis & conversations</button>';
+      html += '</div>';
+
+      html += '</article>';
+
+      return html;
+    }
+
+    function getCategoryOptions(currentCategory) {
+      const normalizedCurrent = normalizeCategory(currentCategory);
+      const categories = allowedCategories.slice();
+
+      if (!categories.includes(normalizedCurrent)) {
+        categories.push(normalizedCurrent);
+      }
+
+      return categories.map(function(category) {
+        return '<option value="' + escapeAttr(category) + '" ' + (category === normalizedCurrent ? "selected" : "") + '>' + escapeHtml(category) + '</option>';
+      }).join("");
+    }
+
+    function updateCaseField() { return; }
+
+    function updateLossIncluded() { return; }
+
+    function updateCategory() { return; }
+
+    function renderList(value) {
+      const list = Array.isArray(value) ? value : value ? [value] : [];
+
+      if (!list.length) return "<p>No items.</p>";
+
+      return "<ul>" + list.map(function(item) {
+        return "<li>" + escapeHtml(typeof item === "string" ? item : JSON.stringify(item)) + "</li>";
+      }).join("") + "</ul>";
+    }
+
+    function renderObjectDetails(value) {
+      const obj = value && typeof value === "object" && !Array.isArray(value)
+        ? value
+        : {};
+
+      const entries = Object.entries(obj).filter(function(entry) {
+        return entry[1] !== null && entry[1] !== undefined && String(entry[1]).trim() !== "";
+      });
+
+      if (!entries.length) return "<p>No details available.</p>";
+
+      return "<table><tbody>" + entries.map(function(entry) {
+        return "<tr><th>" + escapeHtml(entry[0].replace(/_/g, " ")) + "</th><td>" + escapeHtml(
+          typeof entry[1] === "object" ? JSON.stringify(entry[1]) : entry[1]
+        ) + "</td></tr>";
+      }).join("") + "</tbody></table>";
+    }
+
+    function renderConversationPills(ids) {
+      const list = Array.isArray(ids) ? ids : [];
+
+      if (!list.length) return "<p>No conversation IDs found.</p>";
+
+      return list.map(function(id) {
+        return '<span class="conversation-id-pill">' + escapeHtml(id) + '</span>';
+      }).join("");
+    }
+
+    function openMoreDetails(caseId) {
+      const item = getCaseById(caseId);
+      if (!item) return;
+
+      document.getElementById("modalTitle").textContent =
+        "Full analysis & conversations - " + (item.ptc_order_id || item.case_id || "");
+
+      let html = "";
+
+      html += '<div class="analysis-grid">';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Case Details</h4>';
+      html += '<p><strong>PTC Order:</strong> ' + escapeHtml(item.ptc_order_id || "") + '</p>';
+      html += '<p><strong>Shipday Order:</strong> ' + escapeHtml(item.shipday_order_id || "") + '</p>';
+      html += '<p><strong>Weels Order:</strong> ' + escapeHtml(item.weels_order_id || "") + '</p>';
+      html += '<p><strong>Maid:</strong> ' + escapeHtml(item.maid_name || "") + '</p>';
+      html += '<p><strong>Requested Pickup:</strong> ' + escapeHtml(item.requested_pickup_time || "") + '</p>';
+      html += '<p><strong>Requested Delivery:</strong> ' + escapeHtml(item.requested_delivery_time || "") + '</p>';
+      html += '<p><strong>Pickup Address:</strong> ' + escapeHtml(item.pickup_address || "") + '</p>';
+      html += '<p><strong>Delivery Address:</strong> ' + escapeHtml(item.delivery_address || "") + '</p>';
+      html += '<p><strong>Order Cost:</strong> ' + formatMoney(item.trip_cost || item.weels_trip_cost || 0) + '</p>';
+      html += '<p><strong>Loss Amount:</strong> ' + formatMoney(item.loss_amount_aed || item.loss_amount || 0) + '</p>';
+      html += '</div>';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Classification</h4>';
+      html += '<p><strong>Final Category:</strong> ' + escapeHtml(item.final_category || "") + '</p>';
+      html += '<p><strong>Subcategory / Issue Type:</strong> ' + escapeHtml(item.final_subcategory || item.issue_type || "") + '</p>';
+      html += '<p><strong>Confidence:</strong> ' + escapeHtml(item.confidence || "") + '</p>';
+      html += '<p><strong>Responsibility:</strong> ' + escapeHtml(item.responsibility || "") + '</p>';
+      html += '<p><strong>Branch:</strong> ' + escapeHtml(item.analysis_path || "") + '</p>';
+      html += '<p><strong>Loss Scope:</strong> ' + escapeHtml(item.loss_scope || "") + '</p>';
+      html += '<p><strong>Loss Basis:</strong> ' + escapeHtml(item.loss_basis || "") + '</p>';
+      html += '<p><strong>Included in Losses:</strong> ' + (item.include_in_losses === true ? "Yes" : "No") + '</p>';
+      html += '</div>';
+
+      html += '<div class="analysis-box wide-box">';
+      html += '<h4>Final Reason</h4>';
+      html += '<p>' + escapeHtml(item.final_reason || "") + '</p>';
+      html += '</div>';
+
+      html += '<div class="analysis-box wide-box">';
+      html += '<h4>Detailed Root Cause Explanation</h4>';
+      html += '<p>' + escapeHtml(item.detailed_root_cause_explanation || "") + '</p>';
+      html += '</div>';
+
+      html += '<div class="analysis-box wide-box">';
+      html += '<h4>Main Root Cause Summary</h4>';
+      html += '<p>' + escapeHtml(item.main_root_cause_summary || "") + '</p>';
+      html += '</div>';
+
+      html += '<div class="analysis-box wide-box">';
+      html += '<h4>Loss Reason</h4>';
+      html += '<p>' + escapeHtml(item.loss_reason || "") + '</p>';
+      html += '</div>';
+
+      html += '<div class="analysis-box wide-box">';
+      html += '<h4>15-Minute Waiting Window Analysis</h4>';
+      html += renderObjectDetails(item.waiting_window_analysis);
+      html += '</div>';
+
+      html += '<div class="analysis-box wide-box">';
+      html += '<h4>Category Decision Reasoning</h4>';
+      html += renderObjectDetails(item.category_decision_reasoning);
+      html += '</div>';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Evidence Summary</h4>';
+      if (item.evidence_summary_for_report) {
+        html += '<p>' + escapeHtml(item.evidence_summary_for_report) + '</p>';
+      } else if (item.evidence_used_for_report) {
+        html += '<p>' + escapeHtml(item.evidence_used_for_report) + '</p>';
+      } else {
+        html += renderList(item.evidence_summary);
+      }
+      html += '</div>';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Evidence Used</h4>';
+      html += renderList(item.evidence_used);
+      html += '</div>';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Contradictions / Uncertainties</h4>';
+      html += renderList(item.contradictions_or_uncertainties);
+      html += '</div>';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Missing / Unclear Information</h4>';
+      html += renderList(item.missing_or_unclear_information);
+      html += '</div>';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Same Day Conversation IDs</h4>';
+      html += renderConversationPills(item.same_day_conversation_ids);
+      html += '</div>';
+
+      html += '<div class="analysis-box">';
+      html += '<h4>Day Before Conversation IDs</h4>';
+      html += renderConversationPills(item.day_before_conversation_ids);
+      html += '</div>';
+
+      html += '<div class="analysis-box wide-box">';
+      html += '<h4>Recommended Action</h4>';
+      html += '<p>' + escapeHtml(item.recommended_action || "") + '</p>';
+      html += '</div>';
+
+      html += '<div class="analysis-box wide-box">';
+      html += '<h4>AI / Source Evidence Debug</h4>';
+      html += '<pre>' + escapeHtml(JSON.stringify({
+        ai_analysis: item.ai_analysis || null,
+        source_evidence: item.source_evidence || null,
+        final_case_context: item.final_case_context || null,
+        loss_debug: item.loss_debug || null,
+        report_debug: item.report_debug || null
+      }, null, 2)) + '</pre>';
+      html += '</div>';
+
+      html += '</div>';
+
+      document.getElementById("modalBody").innerHTML = html;
+      document.getElementById("detailsModal").style.display = "block";
+    }
+
+    function closeMoreDetails() {
+      document.getElementById("detailsModal").style.display = "none";
+    }
+
+    function downloadJson() { return; }
+
+    function downloadEditedHtml() { return; }
+
+    function downloadTextFile(filename, content, mimeType) {
+      const blob = new Blob([content], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById("detailsModal");
+      if (event.target === modal) {
+        closeMoreDetails();
+      }
+    };
+
+    loadState();
+    renderReport();
+  </script>
+</body>
+</html>
